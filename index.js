@@ -11,7 +11,7 @@ firebase.auth().onAuthStateChanged((user) => {
 function login() {
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
-    
+
     firebase.auth().signInWithEmailAndPassword(email, password)
         .catch((error) => {
             document.getElementById("error").innerHTML = error.message;
@@ -21,7 +21,7 @@ function login() {
 function signUp() {
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
-    
+
     firebase.auth().createUserWithEmailAndPassword(email, password)
         .catch((error) => {
             document.getElementById("error").innerHTML = error.message;
@@ -30,7 +30,7 @@ function signUp() {
 
 function forgotPass() {
     const email = document.getElementById("email").value;
-    
+
     firebase.auth().sendPasswordResetEmail(email)
         .then(() => {
             alert("Reset link sent to your email id");
@@ -42,8 +42,7 @@ function forgotPass() {
 
 function checkExpiry(user) {
     const userEmail = user.email;
-    
-    // डेटाबेस से यूजर डेटा निकालने के लिए क्वेरी
+
     firebase.database().ref("users").orderByChild("email").equalTo(userEmail).once("value")
         .then(snapshot => {
             if (snapshot.exists()) {
@@ -53,14 +52,18 @@ function checkExpiry(user) {
 
                     if (currentDate > expiryDate) {
                         alert("Your account has expired. Please contact support.");
-                        firebase.auth().signOut();
+                        firebase.auth().signOut().then(() => {
+                            location.replace("index.html"); // लॉगआउट के बाद लॉगिन पेज पर जाएं
+                        });
                     } else {
                         location.replace("welcome.html");
                     }
                 });
             } else {
                 alert("User not found in the database.");
-                firebase.auth().signOut();
+                firebase.auth().signOut().then(() => {
+                    location.replace("index.html");
+                });
             }
         })
         .catch(error => {
