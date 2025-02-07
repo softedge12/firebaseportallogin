@@ -2,12 +2,6 @@ document.getElementById("loginForm").addEventListener("submit", (event) => {
     event.preventDefault();
 });
 
-firebase.auth().onAuthStateChanged((user) => {
-    if (user) {
-        checkExpiry(user.email); // Expiry डेट चेक करें
-    }
-});
-
 function login() {
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
@@ -23,25 +17,34 @@ function login() {
 
 function checkExpiry(email) {
     const dbRef = firebase.database().ref("users");
-    dbRef.orderByChild("email").equalTo(email).once("value", (snapshot) => {
-        if (snapshot.exists()) {
-            snapshot.forEach((childSnapshot) => {
-                const userData = childSnapshot.val();
-                const expiryDate = new Date(userData.expiryDate);
-                const currentDate = new Date();
+    
+    // डेटाबेस से मेल आईडी के आधार पर यूजर डेटा लाना
+    dbRef.orderByChild("email").equalTo(email).once("value")
+        .then((snapshot) => {
+            if (snapshot.exists()) {
+                snapshot.forEach((childSnapshot) => {
+                    const userData = childSnapshot.val();
+                    const expiryDate = new Date(userData.expiryDate);
+                    const currentDate = new Date();
 
-                if (currentDate <= expiryDate) {
-                    alert("Login सफल!");
-                    location.replace("welcome.html");
-                } else {
-                    alert("आपकी एक्सपायरी डेट समाप्त हो चुकी है।");
-                    firebase.auth().signOut(); // Logout करें
-                }
-            });
-        } else {
-            alert("यूज़र डेटा नहीं मिला!");
-        }
-    });
+                    if (currentDate <= expiryDate) {
+                        // एक्सपायरी डेट सही है, लॉगिन सफल
+                        alert("Login सफल!");
+                        location.replace("welcome.html");
+                    } else {
+                        // एक्सपायरी डेट समाप्त हो चुकी है
+                        alert("आपकी एक्सपायरी डेट समाप्त हो चुकी है।");
+                        firebase.auth().signOut(); // Logout करें
+                    }
+                });
+            } else {
+                alert("यूज़र डेटा नहीं मिला!");
+                firebase.auth().signOut();
+            }
+        })
+        .catch((error) => {
+            console.error("डेटाबेस पढ़ने में समस्या: ", error);
+        });
 }
 
 function signUp() {
