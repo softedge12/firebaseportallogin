@@ -8,6 +8,12 @@ firebase.auth().onAuthStateChanged((user)=>{
         location.replace("welcome.html")
     }
 })
+firebase.auth().onAuthStateChanged((user) => {
+    if (user) {
+        checkExpiry(user.email); // Realtime Database से Expiry डेट चेक करें
+    }
+});
+
 
 function login(){
     const email = document.getElementById("email").value
