@@ -1,38 +1,38 @@
-document.getElementById("loginForm").addEventListener("submit",(event)=>{
-    event.preventDefault()
-})
+document.getElementById("loginForm").addEventListener("submit", (event) => {
+  event.preventDefault();
+});
 
-firebase.auth().onAuthStateChanged((user)=>{
-    if(user){
-        location.replace("welcome.html")
-    }
-})
+firebase.auth().onAuthStateChanged((user) => {
+  if (user) {
+    const userEmail = user.email;
+    const userRef = firebase.database().ref("users");
 
-function login(){
-    const email = document.getElementById("email").value
-    const password = document.getElementById("password").value
-    firebase.auth().signInWithEmailAndPassword(email, password)
-    .catch((error)=>{
-        document.getElementById("error").innerHTML = error.message
-    })
-}
+    userRef.orderByChild("email").equalTo(userEmail).once("value", (snapshot) => {
+      if (snapshot.exists()) {
+        const userData = Object.values(snapshot.val())[0];
+        const expiryDate = new Date(userData.expiryDate);
+        const currentDate = new Date();
 
-function signUp(){
-    const email = document.getElementById("email").value
-    const password = document.getElementById("password").value
-    firebase.auth().createUserWithEmailAndPassword(email, password)
-    .catch((error) => {
-        document.getElementById("error").innerHTML = error.message
+        if (currentDate <= expiryDate) {
+          location.replace("welcome.html");
+        } else {
+          alert("Your account has expired.");
+          firebase.auth().signOut();
+        }
+      } else {
+        alert("User data not found in database.");
+        firebase.auth().signOut();
+      }
     });
-}
+  }
+});
 
-function forgotPass(){
-    const email = document.getElementById("email").value
-    firebase.auth().sendPasswordResetEmail(email)
-    .then(() => {
-        alert("Reset link sent to your email id")
-    })
+function login() {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  firebase.auth().signInWithEmailAndPassword(email, password)
     .catch((error) => {
-        document.getElementById("error").innerHTML = error.message
+      document.getElementById("error").innerHTML = error.message;
     });
 }
