@@ -43,6 +43,7 @@ function forgotPass() {
 function checkExpiry(user) {
     const userEmail = user.email;
     
+    // डेटाबेस से यूजर डेटा निकालने के लिए क्वेरी
     firebase.database().ref("users").orderByChild("email").equalTo(userEmail).once("value")
         .then(snapshot => {
             if (snapshot.exists()) {
@@ -58,7 +59,7 @@ function checkExpiry(user) {
                     }
                 });
             } else {
-                alert("User not found in database.");
+                alert("User not found in the database.");
                 firebase.auth().signOut();
             }
         })
