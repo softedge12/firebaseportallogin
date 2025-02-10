@@ -54,28 +54,31 @@ function forgotPass() {
 }
 
 function checkExpiry(user) {
-    const userEmail = user.email;
+  const userEmail = user.email;
+  const userRef = firebase.database().ref("users").orderByChild("email").equalTo(userEmail);
 
-    firebase.database().ref("users").orderByChild("email").equalTo(userEmail).once("value")
-        .then(snapshot => {
-            if (snapshot.exists()) {
-                snapshot.forEach(userData => {
-                    const expiryDate = new Date(userData.val().expiryDate);
-                    const currentDate = new Date();
+  userRef.on("value", (snapshot) => {
+    if (snapshot.exists()) {
+      snapshot.forEach(userData => {
+        const expiryDate = new Date(userData.val().expiryDate);
+        const currentDate = new Date();
 
-                    if (currentDate > expiryDate) {
-                        alert("Your account has expired. Please contact support.");
-                        firebase.auth().signOut().then(() => {
-                            location.replace("index.html");
-                        });
-                    }
-                });
-            }
-        })
-        .catch(error => {
-            document.getElementById("error").innerHTML = error.message;
-        });
+        if (currentDate > expiryDate) {
+          alert("Your account has expired. You will be logged out.");
+          firebase.auth().signOut().then(() => {
+            location.replace("index.html");
+          });
+        }
+      });
+    } else {
+      alert("User not found in the database.");
+      firebase.auth().signOut().then(() => {
+        location.replace("index.html");
+      });
+    }
+  });
 }
+
 
 function checkRedirectPage(user) {
     const userEmail = user.email;
