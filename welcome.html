@@ -16,114 +16,103 @@
 </head>
 <body>
    <!-- Navigation -->
-<div class="navbar">
-  <button class="menu-toggle" onclick="toggleMenu()">Menu</button>
-  <div class="menu" id="menu">
-    <a onclick="showSection('home')">Home</a>
-    <a onclick="showSection('quiz')">Quiz</a>
-    <a onclick="showSection('book')">Books</a>
-    <a onclick="showSection('notification')">Notifications</a>
-    <a onclick="logout()">Log Out</a>
+   <div class="navbar">
+    <button class="menu-toggle" onclick="toggleMenu()">Menu</button>
+    <div class="menu" id="menu">
+      <a onclick="showSection('home')">Home</a>
+      <a onclick="showSection('quiz')">Quiz</a>
+      <a onclick="showSection('book')">Books</a>
+      <a onclick="showSection('notification')">Notifications</a>
+      <a onclick="LogOut()">Log Out</a>
+    </div>
   </div>
-</div>
 
-<!-- Home Section -->
-<div class="section active" id="home">
-  <h1>Welcome to the Educational Website</h1>
-  <p>This is the home section. Explore our resources to learn and grow!</p>
-  <center>
-    <iframe src="https://drive.google.com/file/d/1rvJ8ip-KAUdlZVi-oZEOtr8vpwJHQDqi/preview?usp=sharing" 
-      width="100%" height="600" style="border: none; overflow: auto;" oncontextmenu="return false;" 
-      sandbox="allow-scripts allow-same-origin">
-    </iframe>
-  </center>
-</div>
+  <!-- Home Section -->
+  <div class="section active" id="home">
+    <h1>Welcome to the Educational Website</h1>
+    <p>This is the home section. Explore our resources to learn and grow!</p>
+    <center><iframe src="https://drive.google.com/file/d/1rvJ8ip-KAUdlZVi-oZEOtr8vpwJHQDqi/preview?usp=sharing" width="100%" height="600" style="border: none; overflow: auto;" oncontextmenu="return false;" sandbox="allow-scripts allow-same-origin"></iframe></center>
+  </div>
 
-<!-- Quiz Section -->
-<div class="section" id="quiz">
-  <h1>Quiz Section</h1>
-  <p>Test your knowledge with our fun and interactive quizzes!</p>
-  <iframe src="https://script.google.com/macros/s/AKfycbw1aY5QlnWf7J0bE-IhArpOPa1szXaAv_R8_q4rfU6Eno8YH_xzbRTMA35E0MMpKOHk/exec" 
-    width="100%" height="800" style="border:1px solid black;">
-  </iframe>
-</div>
+  <!-- Quiz Section -->
+  <div class="section" id="quiz">
+    <h1>Quiz Section</h1>
+    <p>Test your knowledge with our fun and interactive quizzes!</p>
+    <iframe src="https://script.google.com/macros/s/AKfycbw1aY5QlnWf7J0bE-IhArpOPa1szXaAv_R8_q4rfU6Eno8YH_xzbRTMA35E0MMpKOHk/exec" width="100%" height="800" style="border:1px solid black;"></iframe>
+  </div>
 
-<!-- Book Section -->
-<div class="section" id="book">
-  <h1>Books Section</h1>
-  <p>Discover a variety of educational books to enhance your skills.</p>
-  <center>
-    <iframe src="https://drive.google.com/file/d/1rvJ8ip-KAUdlZVi-oZEOtr8vpwJHQDqi/preview?usp=sharing" 
-      width="100%" height="600" style="border: none; overflow: auto;" oncontextmenu="return false;" 
-      sandbox="allow-scripts allow-same-origin">
-    </iframe>
-  </center>
-</div>
+  <!-- Book Section -->
+  <div class="section" id="book">
+    <h1>Books Section</h1>
+    <p>Discover a variety of educational books to enhance your skills.</p>
+    <center><iframe src="https://drive.google.com/file/d/1rvJ8ip-KAUdlZVi-oZEOtr8vpwJHQDqi/preview?usp=sharing" width="100%" height="600" style="border: none; overflow: auto;" oncontextmenu="return false;" sandbox="allow-scripts allow-same-origin"></iframe></center>
+  </div>
 
-<!-- Notification Section -->
-<div class="section" id="notification">
-  <h1>Notifications Section</h1>
-  <p>Stay updated with the latest news and announcements.</p>
-  <center>
-    <iframe src="https://drive.google.com/file/d/1rvJ8ip-KAUdlZVi-oZEOtr8vpwJHQDqi/preview?usp=sharing" 
-      width="100%" height="600" style="border: none; overflow: auto;" oncontextmenu="return false;" 
-      sandbox="allow-scripts allow-same-origin">
-    </iframe>
-  </center>
-</div>
+  <!-- Notification Section -->
+  <div class="section" id="notification">
+    <h1>Notifications Section</h1>
+    <p>Stay updated with the latest news and announcements.</p>
+    <center><iframe src="https://drive.google.com/file/d/1rvJ8ip-KAUdlZVi-oZEOtr8vpwJHQDqi/preview?usp=sharing" width="100%" height="600" style="border: none; overflow: auto;" oncontextmenu="return false;" sandbox="allow-scripts allow-same-origin"></iframe></center>
+  </div>
 
-<script>
-  // Function to toggle the menu
-  function toggleMenu() {
-    const menu = document.getElementById('menu');
-    menu.style.display = (menu.style.display === 'flex') ? 'none' : 'flex';
-  }
-
-  // Function to show specific section
-  function showSection(sectionId) {
-    const sections = document.querySelectorAll('.section');
-    sections.forEach((section) => {
-      section.classList.toggle('active', section.id === sectionId);
-    });
-    toggleMenu();
-  }
-
-  // Logout Function
-  function logout() {
-    firebase.auth().signOut().then(() => {
-      alert('You have been logged out.');
-      window.location.href = 'index.html'; // Redirect to login page
-    }).catch((error) => {
-      console.error('Logout Error:', error);
-    });
-  }
-</script>
-
-<!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-database-compat.js"></script>
-
-<!-- Firebase Config -->
-<script src="./firebase.js"></script>
-<script>
-  // Check if user session has expired
-  firebase.auth().onAuthStateChanged((user) => {
-    if (user) {
-      const userId = user.uid;
-      const dbRef = firebase.database().ref(`users/${userId}/expiryDate`);
-      dbRef.once('value').then((snapshot) => {
-        const expiryDate = snapshot.val();
-        if (expiryDate && new Date() > new Date(expiryDate)) {
-          alert('Your session has expired. Please log in again.');
-          logout();
-        }
-      });
-    } else {
-      window.location.href = 'index.html'; // Redirect to login if not logged in
+  <script>
+    // Function to toggle the menu
+    function toggleMenu() {
+      const menu = document.getElementById('menu');
+      menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
     }
-  });
-</script>
 
+    // Function to show specific section with flip effect
+    function showSection(sectionId) {
+      const sections = document.querySelectorAll('.section');
+      sections.forEach(section => section.classList.toggle('active', section.id === sectionId));
+      toggleMenu();
+    }
+
+    // Firebase Configurations
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.11/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.6.11/firebase-auth.js";
+    import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/9.6.11/firebase-database.js";
+
+    const firebaseConfig = {/* Firebase configuration here */};
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const database = getDatabase(app);
+
+    // Auto logout if session expires
+    onAuthStateChanged(auth, async user => {
+      if (user) {
+        const userRef = ref(database, `users/${user.uid}`);
+        const snapshot = await get(userRef);
+        const userData = snapshot.val();
+
+        const expiryDate = new Date(userData?.expiryDate);
+        const currentDate = new Date();
+
+        if (currentDate > expiryDate) {
+          alert('Your session has expired. Logging out.');
+          LogOut();
+        }
+      } else {
+        window.location.href = 'index.html'; // Redirect if not logged in
+      }
+    });
+
+    // Logout function
+    function LogOut() {
+      signOut(auth).then(() => {
+        alert('Successfully logged out.');
+        window.location.href = 'index.html';
+      }).catch(error => console.error('Error during logout:', error));
+    }
+  </script>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-database-compat.js"></script>
+  <script src="firebase.js"></script>
+  <script src="welcome.js"></script>
 </body>
 </html>
