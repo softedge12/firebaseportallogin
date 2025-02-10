@@ -10,12 +10,9 @@ firebase.auth().onAuthStateChanged((user) => {
 });
 
 // Logout function
-function LogOut() {
+function logout() {
   firebase.auth().signOut().then(() => {
-    alert('Successfully logged out.');
     location.replace("index.html");
-  }).catch(error => {
-    console.error("Error during logout:", error.message);
   });
 }
 
