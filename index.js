@@ -35,11 +35,15 @@ function signUp() {
     const password = document.getElementById("password").value;
 
     firebase.auth().createUserWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+            alert("आप सफलतापूर्वक साइनअप हो गए हैं। कृपया 24 घंटे बाद लॉगिन करें।");
+        })
         .catch((error) => {
             document.getElementById("error").innerHTML = error.message;
         })
         .finally(() => showSpinner(false));
 }
+
 
 function forgotPass() {
     const email = document.getElementById("email").value;
@@ -57,7 +61,7 @@ function checkExpiry(user) {
   const userEmail = user.email;
   const userRef = firebase.database().ref("users").orderByChild("email").equalTo(userEmail);
 
-  userRef.on("value", (snapshot) => {
+  userRef.once("value", (snapshot) => {
     if (snapshot.exists()) {
       snapshot.forEach(userData => {
         const expiryDate = new Date(userData.val().expiryDate);
@@ -71,7 +75,7 @@ function checkExpiry(user) {
         }
       });
     } else {
-      alert("User not found in the database.");
+      alert("आपकी लॉगिन सुविधा अभी उपलब्ध नहीं है। कृपया बाद में प्रयास करें।");
       firebase.auth().signOut().then(() => {
         location.replace("index.html");
       });
