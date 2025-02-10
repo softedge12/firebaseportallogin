@@ -8,24 +8,37 @@ firebase.auth().onAuthStateChanged((user) => {
     }
 });
 
+function showSpinner(show) {
+    const spinner = document.getElementById("loadingSpinner");
+    spinner.classList.toggle("d-none", !show);
+}
+
 function login() {
+    showSpinner(true); // Spinner दिखाएं
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
 
     firebase.auth().signInWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+            const user = userCredential.user;
+            checkRedirectPage(user);
+        })
         .catch((error) => {
             document.getElementById("error").innerHTML = error.message;
-        });
+        })
+        .finally(() => showSpinner(false)); // Spinner छिपाएं
 }
 
 function signUp() {
+    showSpinner(true);
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
 
     firebase.auth().createUserWithEmailAndPassword(email, password)
         .catch((error) => {
             document.getElementById("error").innerHTML = error.message;
-        });
+        })
+        .finally(() => showSpinner(false));
 }
 
 function forgotPass() {
@@ -53,16 +66,30 @@ function checkExpiry(user) {
                     if (currentDate > expiryDate) {
                         alert("Your account has expired. Please contact support.");
                         firebase.auth().signOut().then(() => {
-                            location.replace("index.html"); // लॉगआउट के बाद लॉगिन पेज पर जाएं
+                            location.replace("index.html");
                         });
-                    } else {
-                        location.replace("welcome.html");
                     }
                 });
-            } else {
-                alert("User not found in the database.");
-                firebase.auth().signOut().then(() => {
-                    location.replace("index.html");
+            }
+        })
+        .catch(error => {
+            document.getElementById("error").innerHTML = error.message;
+        });
+}
+
+function checkRedirectPage(user) {
+    const userEmail = user.email;
+
+    firebase.database().ref("users").orderByChild("email").equalTo(userEmail).once("value")
+        .then(snapshot => {
+            if (snapshot.exists()) {
+                snapshot.forEach(userData => {
+                    const redirectPage = userData.val().redirectPage;
+                    if (redirectPage) {
+                        location.replace(redirectPage);
+                    } else {
+                        alert("No page assigned for this user.");
+                    }
                 });
             }
         })
