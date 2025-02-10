@@ -1,37 +1,35 @@
-// पहले से लॉगिन यूजर की निगरानी करें
 firebase.auth().onAuthStateChanged((user) => {
   if (!user) {
     location.replace("index.html");
   } else {
     document.getElementById("user").innerHTML = "Hello, " + user.email;
 
-    // हर 10 सेकंड पर एक्सपायरी डेट चेक करें
-    setInterval(() => {
-      checkExpiry(user);
-    }, 10000); // 10 सेकंड के बाद दोबारा चेक
+    // एक्सपायरी चेक हर 5 सेकंड में
+    const checkExpiryInterval = setInterval(() => {
+      checkExpiry(user, checkExpiryInterval);
+    }, 5000); // 5 सेकंड चेक इंटरवल
   }
 });
 
-function checkExpiry(user) {
-  const userEmail = user.email;
+function checkExpiry(user, interval) {
+  const userEmail = user.email.replace(/\./g, "_"); // Firebase key issue fix
 
-  // Firebase Realtime Database से एक्सपायरी डेट चेक करें
-  firebase.database().ref("users").orderByChild("email").equalTo(userEmail).once("value")
+  firebase.database().ref("users/" + userEmail).once("value")
     .then(snapshot => {
       if (snapshot.exists()) {
-        snapshot.forEach(userData => {
-          const expiryDate = new Date(userData.val().expiryDate);
-          const currentDate = new Date();
+        const userData = snapshot.val();
+        const expiryDate = new Date(userData.expiryDate);
+        const currentDate = new Date();
 
-          if (currentDate > expiryDate) {
-            alert("Your account has expired. You will be logged out now.");
-            firebase.auth().signOut().then(() => {
-              location.replace("index.html");
-            });
-          }
-        });
+        if (currentDate > expiryDate) {
+          alert("Your account has expired. You will be logged out now.");
+          clearInterval(interval); // इंटरवल बंद करें
+          firebase.auth().signOut().then(() => {
+            location.replace("index.html");
+          });
+        }
       } else {
-        alert("User data not found in the database.");
+        console.error("User not found in the database.");
       }
     })
     .catch(error => {
