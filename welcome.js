@@ -1,13 +1,22 @@
+// Firebase Auth state listener
 firebase.auth().onAuthStateChanged((user) => {
   if (user) {
+    document.getElementById("email-id").textContent = user.email;
     checkExpiry(user);
     monitorExpiry(user);
   } else {
-    // अगर यूज़र लॉगिन नहीं है तो लॉगिन पेज पर भेजें
     location.replace("index.html");
   }
 });
 
+// Logout function
+function logout() {
+  firebase.auth().signOut().then(() => {
+    location.replace("index.html");
+  });
+}
+
+// Check for account expiry
 function checkExpiry(user) {
   const userEmail = user.email;
 
@@ -37,8 +46,9 @@ function checkExpiry(user) {
     });
 }
 
+// Periodic expiry check
 function monitorExpiry(user) {
   setInterval(() => {
     checkExpiry(user);
-  }, 60000); // हर 60 सेकंड में चेक करें
+  }, 60000); // Check every 60 seconds
 }
