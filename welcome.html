@@ -7,109 +7,21 @@
   <title>Welcome Page</title>
 
   <!-- CSS Links -->
-  <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.5.0/mdb.min.css" rel="stylesheet">
-  <style>
-    body {
-      font-family: 'Roboto', sans-serif;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
-      height: 100vh;
-      background-color: #f9f9f9;
-    }
-    nav {
-      position: fixed;
-      top: 10px;
-      left: 10px;
-    }
-    .menu-btn {
-      background-color: #007bff;
-      color: white;
-      border: none;
-      padding: 10px 15px;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background-color 0.3s;
-    }
-    .menu-btn:hover {
-      background-color: #0056b3;
-    }
-    #menu {
-      display: none;
-      background: white;
-      position: absolute;
-      top: 50px;
-      left: 0;
-      z-index: 1;
-      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15);
-    }
-    #menu button {
-      display: block;
-      width: 100%;
-      text-align: left;
-      padding: 10px;
-      background: none;
-      border: none;
-      border-bottom: 1px solid #ddd;
-      cursor: pointer;
-    }
-    #menu button:hover {
-      background-color: #f1f1f1;
-    }
-    .section {
-      display: none;
-      width: 100%;
-      max-width: 900px;
-      margin-top: 80px;
-      background: white;
-      padding: 20px;
-      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-      border-radius: 8px;
-    }
-    iframe {
-      width: 100%;
-      height: 300px;
-      border: none;
-    }
-  </style>
-  
+  <link rel="stylesheet" href="./index.css" />
+  <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.5.0/mdb.min.css" rel="stylesheet" />
+
   <!-- MDB UI Kit -->
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.5.0/mdb.min.js"></script>
 </head>
 <body>
-  <!-- Menu Button -->
-  <nav>
-    <button class="menu-btn" onclick="toggleMenu()">Menu</button>
-    <div id="menu">
-      <button onclick="showSection('home')">Home</button>
-      <button onclick="showSection('quiz')">Quiz</button>
-      <button onclick="showSection('books')">Books</button>
-      <button onclick="showSection('notification')">Notification</button>
-      <button onclick="logout()">Logout</button>
+  <center>
+    <div style="margin:100px">
+      <span id="user" class="message">Hello, <span id="email-id"></span></span>
+      <div class="success"><span>Welcome to auth starter, You are successfully logged in!!!</span></div><br/>
+      <button class="btn btn-danger" onclick="logout()">Logout</button>
     </div>
-  </nav>
-
-  <!-- Sections -->
-  <div id="home" class="section">
-    <h2>Home Section</h2>
-    <iframe src="https://example.com/home"></iframe>
-  </div>
-  <div id="quiz" class="section">
-    <h2>Quiz Section</h2>
-    <iframe src="https://example.com/quiz"></iframe>
-  </div>
-  <div id="books" class="section">
-    <h2>Books Section</h2>
-    <iframe src="https://example.com/books"></iframe>
-  </div>
-  <div id="notification" class="section">
-    <h2>Notification Section</h2>
-    <iframe src="https://example.com/notification"></iframe>
-  </div>
+  </center>
 
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-app-compat.js"></script>
@@ -118,30 +30,6 @@
 
   <!-- Firebase Config -->
   <script src="firebase.js"></script>
-  <script>
-    function toggleMenu() {
-      const menu = document.getElementById('menu');
-      menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
-    }
-
-    function showSection(sectionId) {
-      const sections = document.querySelectorAll('.section');
-      sections.forEach(section => section.style.display = 'none');
-      document.getElementById(sectionId).style.display = 'block';
-      toggleMenu();
-    }
-
-    function logout() {
-      firebase.auth().signOut().then(() => {
-        alert('Successfully logged out');
-        location.replace('index.html');
-      }).catch((error) => {
-        console.error('Error during logout:', error);
-      });
-    }
-
-    // Default to Home Section
-    document.addEventListener('DOMContentLoaded', () => showSection('home'));
-  </script>
+  <script src="welcome.js"></script>
 </body>
 </html>
