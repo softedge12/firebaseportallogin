@@ -92,24 +92,25 @@ function checkRedirectPage(user) {
       if (snapshot.exists()) {
         const pages = [];
         snapshot.forEach(userData => {
-          const redirectPage = userData.val().redirectPage;
-          const expiryDate = userData.val().expiryDate;
-          const currentDate = new Date();
+          if (userData.val().pages) {
+            userData.val().pages.forEach(page => {
+              const expiryDate = new Date(page.expiryDate);
+              const currentDate = new Date();
 
-          if (new Date(expiryDate) > currentDate) {
-            pages.push({ redirectPage, expiryDate });
+              if (currentDate <= expiryDate) {
+                pages.push(page.redirectPage);
+              }
+            });
           }
         });
 
-        if (pages.length === 1) {
-          // Automatically redirect if only one page
-          location.replace(pages[0].redirectPage);
-        } else if (pages.length > 1) {
-          // Show page selection if multiple subscriptions are available
+        if (pages.length > 0) {
           showPageSelection(pages);
         } else {
-          alert("No valid subscription available.");
+          alert("No active pages available.");
         }
+      } else {
+        alert("User not found.");
       }
     })
     .catch(error => {
@@ -118,20 +119,10 @@ function checkRedirectPage(user) {
 }
 
 function showPageSelection(pages) {
-  const selectionContainer = document.createElement("div");
-  selectionContainer.innerHTML = "<h3>Select a Page to Visit</h3>";
-
-  pages.forEach((page, index) => {
-    const button = document.createElement("button");
-    button.textContent = `Page ${index + 1} (Expiry: ${page.expiryDate})`;
-    button.classList.add("btn", "btn-primary", "m-2");
-    button.onclick = () => location.replace(page.redirectPage);
-    selectionContainer.appendChild(button);
+  let pageListHtml = '<h3>Select a Page to Access:</h3><ul>';
+  pages.forEach(page => {
+    pageListHtml += `<li><a href="${page}">${page}</a></li>`;
   });
-
-  document.body.innerHTML = ""; // Clear existing content
-  document.body.appendChild(selectionContainer);
+  pageListHtml += '</ul>';
+  document.body.innerHTML = pageListHtml;
 }
-
-
-
