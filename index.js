@@ -14,7 +14,7 @@ function showSpinner(show) {
 }
 
 function login() {
-    showSpinner(true); // Spinner दिखाएं
+    showSpinner(true);
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
 
@@ -26,7 +26,7 @@ function login() {
         .catch((error) => {
             document.getElementById("error").innerHTML = error.message;
         })
-        .finally(() => showSpinner(false)); // Spinner छिपाएं
+        .finally(() => showSpinner(false));
 }
 
 function signUp() {
@@ -44,7 +44,6 @@ function signUp() {
         .finally(() => showSpinner(false));
 }
 
-
 function forgotPass() {
     const email = document.getElementById("email").value;
 
@@ -58,31 +57,30 @@ function forgotPass() {
 }
 
 function checkExpiry(user) {
-  const userEmail = user.email;
-  const userRef = firebase.database().ref("users").orderByChild("email").equalTo(userEmail);
+    const userEmail = user.email;
+    const userRef = firebase.database().ref("users").orderByChild("email").equalTo(userEmail);
 
-  userRef.once("value", (snapshot) => {
-    if (snapshot.exists()) {
-      snapshot.forEach(userData => {
-        const expiryDate = new Date(userData.val().expiryDate);
-        const currentDate = new Date();
+    userRef.once("value", (snapshot) => {
+        if (snapshot.exists()) {
+            snapshot.forEach(userData => {
+                const expiryDate = new Date(userData.val().expiryDate);
+                const currentDate = new Date();
 
-        if (currentDate > expiryDate) {
-          alert("Your account has expired. You will be logged out.");
-          firebase.auth().signOut().then(() => {
-            location.replace("index.html");
-          });
+                if (currentDate > expiryDate) {
+                    alert("Your account has expired. You will be logged out.");
+                    firebase.auth().signOut().then(() => {
+                        location.replace("index.html");
+                    });
+                }
+            });
+        } else {
+            alert("आपकी लॉगिन सुविधा अभी उपलब्ध नहीं है। कृपया बाद में प्रयास करें।");
+            firebase.auth().signOut().then(() => {
+                location.replace("index.html");
+            });
         }
-      });
-    } else {
-      alert("आपकी लॉगिन सुविधा अभी उपलब्ध नहीं है। कृपया बाद में प्रयास करें।");
-      firebase.auth().signOut().then(() => {
-        location.replace("index.html");
-      });
-    }
-  });
+    });
 }
-
 
 function checkRedirectPage(user) {
     const userEmail = user.email;
@@ -90,40 +88,26 @@ function checkRedirectPage(user) {
     firebase.database().ref("users").orderByChild("email").equalTo(userEmail).once("value")
         .then(snapshot => {
             if (snapshot.exists()) {
-                const pages = [];
+                const redirectOptions = [];
                 snapshot.forEach(userData => {
                     const redirectPage = userData.val().redirectPage;
-                    if (redirectPage) {
-                        pages.push(redirectPage);
+                    const expiryDate = new Date(userData.val().expiryDate);
+                    const currentDate = new Date();
+
+                    if (currentDate <= expiryDate) {
+                        redirectOptions.push(redirectPage);
                     }
                 });
 
-                if (pages.length === 1) {
-                    // केवल एक पेज है, सीधा रीडायरेक्ट करें
-                    location.replace(pages[0]);
-                } else if (pages.length > 1) {
-                    // ड्रॉपडाउन के जरिए विकल्प चुनने दें
-                    const pageSelect = document.createElement("select");
-                    pageSelect.innerHTML = `<option value="">Select a Page</option>`;
-                    pages.forEach(page => {
-                        pageSelect.innerHTML += `<option value="${page}">${page}</option>`;
-                    });
-
-                    document.body.appendChild(pageSelect);
-
-                    const goButton = document.createElement("button");
-                    goButton.innerText = "Go to Page";
-                    goButton.onclick = () => {
-                        if (pageSelect.value) {
-                            location.replace(pageSelect.value);
-                        } else {
-                            alert("Please select a page.");
-                        }
-                    };
-                    document.body.appendChild(goButton);
+                if (redirectOptions.length > 1) {
+                    showRedirectSelection(redirectOptions);
+                } else if (redirectOptions.length === 1) {
+                    location.replace(redirectOptions[0]);
                 } else {
-                    alert("No page assigned for this user.");
+                    alert("कोई भी सक्रिय पेज उपलब्ध नहीं है।");
                 }
+            } else {
+                alert("कोई डेटा उपलब्ध नहीं है।");
             }
         })
         .catch(error => {
@@ -131,6 +115,20 @@ function checkRedirectPage(user) {
         });
 }
 
-
+function showRedirectSelection(redirectOptions) {
+    const container = document.createElement('div');
+    container.innerHTML = `
+        <h2>कृपया अपना वेब पेज चुनें:</h2>
+        <select id="redirectPageSelect">
+            ${redirectOptions.map(page => `<option value="${page}">${page}</option>`).join('')}
+        </select>
+        <button onclick="redirectToPage()">Go</button>
+    `;
+    document.body.innerHTML = '';
+    document.body.appendChild(container);
 }
 
+function redirectToPage() {
+    const selectedPage = document.getElementById('redirectPageSelect').value;
+    location.replace(selectedPage);
+}
