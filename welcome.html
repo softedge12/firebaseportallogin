@@ -69,6 +69,7 @@
       if (user) {
         checkExpiry(user);
         monitorExpiry(user);
+        loadUserPages(user);
       } else {
         location.replace("index.html");
       }
@@ -141,6 +142,46 @@
 
       // Hide menu after selection
       toggleMenu();
+    }
+
+    // Load user pages from Firebase
+    function loadUserPages(user) {
+      const userEmail = user.email;
+      const userRef = firebase.database().ref("users").orderByChild("email").equalTo(userEmail);
+
+      userRef.once("value", (snapshot) => {
+        if (snapshot.exists()) {
+          const pageListContainer = document.createElement("div");
+          pageListContainer.innerHTML = `<h2>Please select your content:</h2>`;
+          
+          snapshot.forEach(userData => {
+            const redirectPage = userData.val().redirectPage;
+            const expiryDate = new Date(userData.val().expiryDate);
+            const currentDate = new Date();
+
+            // Hide expired pages
+            if (currentDate > expiryDate) {
+              return;
+            }
+
+            // Create button for each valid page
+            const listItem = document.createElement("button");
+            listItem.textContent = `${redirectPage} (Valid till: ${expiryDate.toDateString()})`;
+            listItem.classList.add("btn", "btn-primary", "m-2");
+            listItem.onclick = () => {
+              location.replace(redirectPage);
+            };
+            pageListContainer.appendChild(listItem);
+          });
+
+          document.body.insertBefore(pageListContainer, document.body.firstChild);
+        } else {
+          alert("No active subscriptions found.");
+          firebase.auth().signOut().then(() => {
+            location.replace("index.html");
+          });
+        }
+      });
     }
   </script>
 </body>
