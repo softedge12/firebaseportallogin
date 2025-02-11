@@ -85,50 +85,55 @@ function checkExpiry(user) {
 function checkRedirectPage(user) {
     const userEmail = user.email;
 
-    firebase.database().ref("users").orderByChild("email").equalTo(userEmail).once("value")
+    firebase.database().ref("users/" + userEmail.replace(".", "_") + "/subscriptions")
+        .once("value")
         .then(snapshot => {
             if (snapshot.exists()) {
-                const redirectOptions = [];
-                snapshot.forEach(userData => {
-                    const redirectPage = userData.val().redirectPage;
-                    const expiryDate = new Date(userData.val().expiryDate);
+                const subscriptions = snapshot.val();
+                const validPages = [];
+
+                for (const key in subscriptions) {
+                    const subscription = subscriptions[key];
+                    const expiryDate = new Date(subscription.expiryDate);
                     const currentDate = new Date();
 
                     if (currentDate <= expiryDate) {
-                        redirectOptions.push(redirectPage);
+                        validPages.push({
+                            page: subscription.redirectPage,
+                            expiryDate: subscription.expiryDate
+                        });
                     }
-                });
+                }
 
-                if (redirectOptions.length > 1) {
-                    showRedirectSelection(redirectOptions);
-                } else if (redirectOptions.length === 1) {
-                    location.replace(redirectOptions[0]);
+                if (validPages.length === 1) {
+                    // Directly redirect if only one valid page
+                    location.replace(validPages[0].page);
+                } else if (validPages.length > 1) {
+                    // Show page selection
+                    let pageOptions = "Select a page to continue:\n";
+                    validPages.forEach((page, index) => {
+                        pageOptions += `${index + 1}. ${page.page} (Expiry: ${page.expiryDate})\n`;
+                    });
+
+                    const selectedPage = prompt(pageOptions, "Enter number of page");
+                    if (selectedPage && validPages[selectedPage - 1]) {
+                        location.replace(validPages[selectedPage - 1].page);
+                    } else {
+                        alert("Invalid selection!");
+                        firebase.auth().signOut();
+                    }
                 } else {
-                    alert("कोई भी सक्रिय पेज उपलब्ध नहीं है।");
+                    alert("No valid subscriptions found.");
+                    firebase.auth().signOut();
                 }
             } else {
-                alert("कोई डेटा उपलब्ध नहीं है।");
+                alert("No subscriptions found for this user.");
+                firebase.auth().signOut();
             }
         })
         .catch(error => {
-            document.getElementById("error").innerHTML = error.message;
+            console.error("Error fetching subscriptions:", error.message);
         });
 }
 
-function showRedirectSelection(redirectOptions) {
-    const container = document.createElement('div');
-    container.innerHTML = `
-        <h2>कृपया अपना वेब पेज चुनें:</h2>
-        <select id="redirectPageSelect">
-            ${redirectOptions.map(page => `<option value="${page}">${page}</option>`).join('')}
-        </select>
-        <button onclick="redirectToPage()">Go</button>
-    `;
-    document.body.innerHTML = '';
-    document.body.appendChild(container);
-}
-
-function redirectToPage() {
-    const selectedPage = document.getElementById('redirectPageSelect').value;
-    location.replace(selectedPage);
 }
