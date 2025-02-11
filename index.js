@@ -90,18 +90,37 @@ function checkRedirectPage(user) {
     firebase.database().ref("users").orderByChild("email").equalTo(userEmail).once("value")
         .then(snapshot => {
             if (snapshot.exists()) {
-                const userDataList = [];
+                const pages = [];
                 snapshot.forEach(userData => {
-                    userDataList.push({
-                        redirectPage: userData.val().redirectPage,
-                        expiryDate: userData.val().expiryDate
-                    });
+                    const redirectPage = userData.val().redirectPage;
+                    if (redirectPage) {
+                        pages.push(redirectPage);
+                    }
                 });
 
-                if (userDataList.length > 1) {
-                    showPageSelection(userDataList);
-                } else if (userDataList.length === 1) {
-                    location.replace(userDataList[0].redirectPage);
+                if (pages.length === 1) {
+                    // केवल एक पेज है, सीधा रीडायरेक्ट करें
+                    location.replace(pages[0]);
+                } else if (pages.length > 1) {
+                    // ड्रॉपडाउन के जरिए विकल्प चुनने दें
+                    const pageSelect = document.createElement("select");
+                    pageSelect.innerHTML = `<option value="">Select a Page</option>`;
+                    pages.forEach(page => {
+                        pageSelect.innerHTML += `<option value="${page}">${page}</option>`;
+                    });
+
+                    document.body.appendChild(pageSelect);
+
+                    const goButton = document.createElement("button");
+                    goButton.innerText = "Go to Page";
+                    goButton.onclick = () => {
+                        if (pageSelect.value) {
+                            location.replace(pageSelect.value);
+                        } else {
+                            alert("Please select a page.");
+                        }
+                    };
+                    document.body.appendChild(goButton);
                 } else {
                     alert("No page assigned for this user.");
                 }
@@ -112,26 +131,6 @@ function checkRedirectPage(user) {
         });
 }
 
-// यूजर को पेज चयन के लिए ड्रॉपडाउन दिखाएं
-function showPageSelection(userDataList) {
-    let pageOptions = "<h3>Select Your Page:</h3><select id='pageSelect'>";
-    
-    userDataList.forEach((data, index) => {
-        const expiryDate = new Date(data.expiryDate).toLocaleDateString();
-        pageOptions += `<option value="${data.redirectPage}">Page ${index + 1} (Expiry: ${expiryDate})</option>`;
-    });
-
-    pageOptions += "</select><button onclick='redirectToPage()'>Go</button>";
-    
-    document.body.innerHTML = pageOptions;
-}
-
-function redirectToPage() {
-    const selectedPage = document.getElementById("pageSelect").value;
-    if (selectedPage) {
-        location.replace(selectedPage);
-    } else {
-        alert("Please select a page.");
     }
 }
 
