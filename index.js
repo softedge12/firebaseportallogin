@@ -100,7 +100,7 @@ function checkRedirectPages(user) {
                         const expiryDate = new Date(pageData.expiryDate);
 
                         if (expiryDate > currentDate) {
-                            validPages.push(pageData.url);
+                            validPages.push(pageData.redirectPage);
                         }
                     }
                 });
@@ -108,17 +108,7 @@ function checkRedirectPages(user) {
                 if (validPages.length === 1) {
                     location.replace(validPages[0]);
                 } else if (validPages.length > 1) {
-                    let pageOptions = "Please select a page:\n";
-                    validPages.forEach((page, index) => {
-                        pageOptions += `${index + 1}. ${page}\n`;
-                    });
-
-                    const choice = prompt(pageOptions);
-                    if (choice && validPages[parseInt(choice) - 1]) {
-                        location.replace(validPages[parseInt(choice) - 1]);
-                    } else {
-                        alert("Invalid selection!");
-                    }
+                    showPageDropdown(validPages);
                 } else {
                     alert("All subscriptions have expired.");
                     firebase.auth().signOut().then(() => {
@@ -131,4 +121,24 @@ function checkRedirectPages(user) {
             document.getElementById("error").innerHTML = error.message;
         });
 }
+
+function showPageDropdown(validPages) {
+    // Create dropdown dynamically
+    const dropdownDiv = document.createElement("div");
+    dropdownDiv.innerHTML = `
+        <label>Select a Page:</label>
+        <select id="pageDropdown">
+            ${validPages.map((page, index) => `<option value="${page}">${page}</option>`).join("")}
+        </select>
+        <button id="goButton">Go</button>
+    `;
+    document.body.appendChild(dropdownDiv);
+
+    // Handle selection
+    document.getElementById("goButton").addEventListener("click", () => {
+        const selectedPage = document.getElementById("pageDropdown").value;
+        location.replace(selectedPage);
+    });
+}
+
 
