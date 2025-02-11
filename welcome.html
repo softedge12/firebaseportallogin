@@ -27,6 +27,9 @@
     </div>
   </div>
 
+  <!-- Dynamic User Page Selection Section -->
+  <div id="pageListContainer" style="padding: 20px; text-align: center;"></div>
+
   <!-- Home Section -->
   <div class="section active" id="home">
     <h1>Welcome to the Educational Website</h1>
@@ -151,9 +154,9 @@
 
       userRef.once("value", (snapshot) => {
         if (snapshot.exists()) {
-          const pageListContainer = document.createElement("div");
+          const pageListContainer = document.getElementById("pageListContainer");
           pageListContainer.innerHTML = `<h2>Please select your content:</h2>`;
-          
+
           snapshot.forEach(userData => {
             const redirectPage = userData.val().redirectPage;
             const expiryDate = new Date(userData.val().expiryDate);
@@ -173,8 +176,6 @@
             };
             pageListContainer.appendChild(listItem);
           });
-
-          document.body.insertBefore(pageListContainer, document.body.firstChild);
         } else {
           alert("No active subscriptions found.");
           firebase.auth().signOut().then(() => {
