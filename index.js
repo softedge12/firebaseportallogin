@@ -82,58 +82,52 @@ function checkExpiry(user) {
     });
 }
 
-function checkRedirectPage(user) {
-    const userEmail = user.email;
-
-    firebase.database().ref("users/" + userEmail.replace(".", "_") + "/subscriptions")
-        .once("value")
+function checkRedirectPage(email) {
+    firebase.database().ref(`users/${email}`).once("value")
         .then(snapshot => {
             if (snapshot.exists()) {
-                const subscriptions = snapshot.val();
-                const validPages = [];
+                const userData = snapshot.val();
+                let subscriptions = userData.subscriptions;
 
-                for (const key in subscriptions) {
-                    const subscription = subscriptions[key];
-                    const expiryDate = new Date(subscription.expiryDate);
-                    const currentDate = new Date();
+                if (subscriptions) {
+                    // Create a dropdown element
+                    let dropdown = document.createElement("select");
+                    dropdown.id = "subscriptionDropdown";
 
-                    if (currentDate <= expiryDate) {
-                        validPages.push({
-                            page: subscription.redirectPage,
-                            expiryDate: subscription.expiryDate
-                        });
+                    // Default option
+                    let defaultOption = document.createElement("option");
+                    defaultOption.text = "Select a Topic";
+                    dropdown.appendChild(defaultOption);
+
+                    // Populate dropdown
+                    for (let key in subscriptions) {
+                        let option = document.createElement("option");
+                        option.value = subscriptions[key].redirectPage;
+                        option.text = `${key} (Expiry: ${subscriptions[key].expiryDate})`;
+                        dropdown.appendChild(option);
                     }
-                }
 
-                if (validPages.length === 1) {
-                    // Directly redirect if only one valid page
-                    location.replace(validPages[0].page);
-                } else if (validPages.length > 1) {
-                    // Show page selection
-                    let pageOptions = "Select a page to continue:\n";
-                    validPages.forEach((page, index) => {
-                        pageOptions += `${index + 1}. ${page.page} (Expiry: ${page.expiryDate})\n`;
+                    document.body.appendChild(dropdown);
+
+                    // Add event listener for selection
+                    dropdown.addEventListener("change", function () {
+                        if (this.value) {
+                            location.replace(this.value); // Redirect to selected page
+                        }
                     });
-
-                    const selectedPage = prompt(pageOptions, "Enter number of page");
-                    if (selectedPage && validPages[selectedPage - 1]) {
-                        location.replace(validPages[selectedPage - 1].page);
-                    } else {
-                        alert("Invalid selection!");
-                        firebase.auth().signOut();
-                    }
                 } else {
-                    alert("No valid subscriptions found.");
-                    firebase.auth().signOut();
+                    // Single redirect if no multiple subscriptions
+                    location.replace(userData.redirectPage);
                 }
             } else {
-                alert("No subscriptions found for this user.");
-                firebase.auth().signOut();
+                alert("User not found or expired.");
             }
         })
         .catch(error => {
-            console.error("Error fetching subscriptions:", error.message);
+            document.getElementById("error").innerHTML = error.message;
         });
+}
+
 }
 
 }
