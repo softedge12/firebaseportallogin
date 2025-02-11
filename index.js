@@ -85,41 +85,52 @@ function checkExpiry(user) {
 
 
 function checkRedirectPage(user) {
-    const userEmail = user.email;
+  const userEmail = user.email;
 
-    firebase.database().ref("users").orderByChild("email").equalTo(userEmail).once("value")
-        .then(snapshot => {
-            if (snapshot.exists()) {
-                const pageOptions = [];
-                snapshot.forEach(userData => {
-                    const redirectPage = userData.val().redirectPage;
-                    if (redirectPage) {
-                        pageOptions.push(redirectPage);
-                    }
-                });
+  firebase.database().ref("users").orderByChild("email").equalTo(userEmail).once("value")
+    .then(snapshot => {
+      if (snapshot.exists()) {
+        const pages = [];
+        snapshot.forEach(userData => {
+          const redirectPage = userData.val().redirectPage;
+          const expiryDate = userData.val().expiryDate;
+          const currentDate = new Date();
 
-                if (pageOptions.length === 1) {
-                    location.replace(pageOptions[0]);
-                } else if (pageOptions.length > 1) {
-                    showPageSelection(pageOptions);
-                } else {
-                    alert("No page assigned for this user.");
-                }
-            }
-        })
-        .catch(error => {
-            document.getElementById("error").innerHTML = error.message;
+          if (new Date(expiryDate) > currentDate) {
+            pages.push({ redirectPage, expiryDate });
+          }
         });
+
+        if (pages.length === 1) {
+          // Automatically redirect if only one page
+          location.replace(pages[0].redirectPage);
+        } else if (pages.length > 1) {
+          // Show page selection if multiple subscriptions are available
+          showPageSelection(pages);
+        } else {
+          alert("No valid subscription available.");
+        }
+      }
+    })
+    .catch(error => {
+      document.getElementById("error").innerHTML = error.message;
+    });
 }
 
-function showPageSelection(pageOptions) {
-    let pageListHTML = '<h3>Select a Page</h3><ul>';
-    pageOptions.forEach(page => {
-        pageListHTML += `<li><a href="${page}">${page}</a></li>`;
-    });
-    pageListHTML += '</ul>';
+function showPageSelection(pages) {
+  const selectionContainer = document.createElement("div");
+  selectionContainer.innerHTML = "<h3>Select a Page to Visit</h3>";
 
-    document.body.innerHTML = pageListHTML;
+  pages.forEach((page, index) => {
+    const button = document.createElement("button");
+    button.textContent = `Page ${index + 1} (Expiry: ${page.expiryDate})`;
+    button.classList.add("btn", "btn-primary", "m-2");
+    button.onclick = () => location.replace(page.redirectPage);
+    selectionContainer.appendChild(button);
+  });
+
+  document.body.innerHTML = ""; // Clear existing content
+  document.body.appendChild(selectionContainer);
 }
 
 
