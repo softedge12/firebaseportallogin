@@ -172,7 +172,11 @@
             listItem.textContent = `${redirectPage} (Valid till: ${expiryDate.toDateString()})`;
             listItem.classList.add("btn", "btn-primary", "m-2");
             listItem.onclick = () => {
-              location.replace(redirectPage);
+              if (redirectPage) {
+                location.replace(redirectPage);
+              } else {
+                alert("No page assigned to this user.");
+              }
             };
             pageListContainer.appendChild(listItem);
           });
