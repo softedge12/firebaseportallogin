@@ -131,8 +131,6 @@ function checkRedirectPage(user) {
         });
 }
 
-    }
-}
 
 }
 
