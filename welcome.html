@@ -82,34 +82,52 @@
     }
 
     // Check for account expiry
-    function checkExpiry(user) {
-      const userEmail = user.email;
+   function checkExpiry(user) {
+  const userEmail = user.email;
 
-      firebase.database().ref("users").orderByChild("email").equalTo(userEmail).once("value")
-        .then(snapshot => {
-          if (snapshot.exists()) {
-            snapshot.forEach(userData => {
-              const expiryDate = new Date(userData.val().expiryDate);
+  firebase.database().ref("users").orderByChild("email").equalTo(userEmail).once("value")
+    .then(snapshot => {
+      if (snapshot.exists()) {
+        snapshot.forEach(userData => {
+          const pages = userData.val().pages;
+
+          if (pages && pages.length > 0) {
+            let accountExpired = false;
+
+            pages.forEach(pageData => {
+              const expiryDate = new Date(pageData.expiryDate);
               const currentDate = new Date();
 
               if (currentDate > expiryDate) {
-                alert("Your account has expired. Logging out.");
-                firebase.auth().signOut().then(() => {
-                  location.replace("index.html");
-                });
+                accountExpired = true;
               }
             });
+
+            if (accountExpired) {
+              alert("Your account has expired. Logging out.");
+              firebase.auth().signOut().then(() => {
+                location.replace("index.html");
+              });
+            }
           } else {
-            alert("User not found in the database.");
+            alert("No page access data found.");
             firebase.auth().signOut().then(() => {
               location.replace("index.html");
             });
           }
-        })
-        .catch(error => {
-          console.error("Error checking expiry:", error.message);
         });
-    }
+      } else {
+        alert("User not found in the database.");
+        firebase.auth().signOut().then(() => {
+          location.replace("index.html");
+        });
+      }
+    })
+    .catch(error => {
+      console.error("Error checking expiry:", error.message);
+    });
+}
+
 
     // Periodic expiry check
     function monitorExpiry(user) {
