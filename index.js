@@ -84,36 +84,26 @@ function checkExpiry(user) {
 }
 
 
-function checkRedirectPages(user) {
+function checkRedirectPage(user) {
     const userEmail = user.email;
-    const currentDate = new Date();
 
     firebase.database().ref("users").orderByChild("email").equalTo(userEmail).once("value")
         .then(snapshot => {
-            const validPages = [];
             if (snapshot.exists()) {
+                const pageOptions = [];
                 snapshot.forEach(userData => {
-                    const pages = userData.val().pages;
-
-                    for (const pageKey in pages) {
-                        const pageData = pages[pageKey];
-                        const expiryDate = new Date(pageData.expiryDate);
-
-                        if (expiryDate > currentDate) {
-                            validPages.push(pageData.redirectPage);
-                        }
+                    const redirectPage = userData.val().redirectPage;
+                    if (redirectPage) {
+                        pageOptions.push(redirectPage);
                     }
                 });
 
-                if (validPages.length === 1) {
-                    location.replace(validPages[0]);
-                } else if (validPages.length > 1) {
-                    showPageDropdown(validPages);
+                if (pageOptions.length === 1) {
+                    location.replace(pageOptions[0]);
+                } else if (pageOptions.length > 1) {
+                    showPageSelection(pageOptions);
                 } else {
-                    alert("All subscriptions have expired.");
-                    firebase.auth().signOut().then(() => {
-                        location.replace("index.html");
-                    });
+                    alert("No page assigned for this user.");
                 }
             }
         })
@@ -122,23 +112,15 @@ function checkRedirectPages(user) {
         });
 }
 
-function showPageDropdown(validPages) {
-    // Create dropdown dynamically
-    const dropdownDiv = document.createElement("div");
-    dropdownDiv.innerHTML = `
-        <label>Select a Page:</label>
-        <select id="pageDropdown">
-            ${validPages.map((page, index) => `<option value="${page}">${page}</option>`).join("")}
-        </select>
-        <button id="goButton">Go</button>
-    `;
-    document.body.appendChild(dropdownDiv);
-
-    // Handle selection
-    document.getElementById("goButton").addEventListener("click", () => {
-        const selectedPage = document.getElementById("pageDropdown").value;
-        location.replace(selectedPage);
+function showPageSelection(pageOptions) {
+    let pageListHTML = '<h3>Select a Page</h3><ul>';
+    pageOptions.forEach(page => {
+        pageListHTML += `<li><a href="${page}">${page}</a></li>`;
     });
+    pageListHTML += '</ul>';
+
+    document.body.innerHTML = pageListHTML;
 }
+
 
 
