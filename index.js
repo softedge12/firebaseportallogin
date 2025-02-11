@@ -84,23 +84,51 @@ function checkExpiry(user) {
 }
 
 
-function checkRedirectPage(user) {
+function checkRedirectPages(user) {
     const userEmail = user.email;
+    const currentDate = new Date();
 
     firebase.database().ref("users").orderByChild("email").equalTo(userEmail).once("value")
         .then(snapshot => {
+            const validPages = [];
             if (snapshot.exists()) {
                 snapshot.forEach(userData => {
-                    const redirectPage = userData.val().redirectPage;
-                    if (redirectPage) {
-                        location.replace(redirectPage);
-                    } else {
-                        alert("No page assigned for this user.");
+                    const pages = userData.val().pages;
+
+                    for (const pageKey in pages) {
+                        const pageData = pages[pageKey];
+                        const expiryDate = new Date(pageData.expiryDate);
+
+                        if (expiryDate > currentDate) {
+                            validPages.push(pageData.url);
+                        }
                     }
                 });
+
+                if (validPages.length === 1) {
+                    location.replace(validPages[0]);
+                } else if (validPages.length > 1) {
+                    let pageOptions = "Please select a page:\n";
+                    validPages.forEach((page, index) => {
+                        pageOptions += `${index + 1}. ${page}\n`;
+                    });
+
+                    const choice = prompt(pageOptions);
+                    if (choice && validPages[parseInt(choice) - 1]) {
+                        location.replace(validPages[parseInt(choice) - 1]);
+                    } else {
+                        alert("Invalid selection!");
+                    }
+                } else {
+                    alert("All subscriptions have expired.");
+                    firebase.auth().signOut().then(() => {
+                        location.replace("index.html");
+                    });
+                }
             }
         })
         .catch(error => {
             document.getElementById("error").innerHTML = error.message;
         });
 }
+
