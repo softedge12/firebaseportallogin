@@ -65,4 +65,5 @@ body{
     align-items: center;
     width: 4rem;
     height: 4rem;
+    animation: none;
 }
