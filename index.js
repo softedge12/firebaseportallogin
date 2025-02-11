@@ -90,17 +90,49 @@ function checkRedirectPage(user) {
     firebase.database().ref("users").orderByChild("email").equalTo(userEmail).once("value")
         .then(snapshot => {
             if (snapshot.exists()) {
+                const userDataList = [];
                 snapshot.forEach(userData => {
-                    const redirectPage = userData.val().redirectPage;
-                    if (redirectPage) {
-                        location.replace(redirectPage);
-                    } else {
-                        alert("No page assigned for this user.");
-                    }
+                    userDataList.push({
+                        redirectPage: userData.val().redirectPage,
+                        expiryDate: userData.val().expiryDate
+                    });
                 });
+
+                if (userDataList.length > 1) {
+                    showPageSelection(userDataList);
+                } else if (userDataList.length === 1) {
+                    location.replace(userDataList[0].redirectPage);
+                } else {
+                    alert("No page assigned for this user.");
+                }
             }
         })
         .catch(error => {
             document.getElementById("error").innerHTML = error.message;
         });
+}
+
+// यूजर को पेज चयन के लिए ड्रॉपडाउन दिखाएं
+function showPageSelection(userDataList) {
+    let pageOptions = "<h3>Select Your Page:</h3><select id='pageSelect'>";
+    
+    userDataList.forEach((data, index) => {
+        const expiryDate = new Date(data.expiryDate).toLocaleDateString();
+        pageOptions += `<option value="${data.redirectPage}">Page ${index + 1} (Expiry: ${expiryDate})</option>`;
+    });
+
+    pageOptions += "</select><button onclick='redirectToPage()'>Go</button>";
+    
+    document.body.innerHTML = pageOptions;
+}
+
+function redirectToPage() {
+    const selectedPage = document.getElementById("pageSelect").value;
+    if (selectedPage) {
+        location.replace(selectedPage);
+    } else {
+        alert("Please select a page.");
+    }
+}
+
 }
