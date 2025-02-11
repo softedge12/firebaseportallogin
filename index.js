@@ -37,12 +37,20 @@ function signUp() {
     firebase.auth().createUserWithEmailAndPassword(email, password)
         .then((userCredential) => {
             alert("आप सफलतापूर्वक साइनअप हो गए हैं। कृपया 24 घंटे बाद लॉगिन करें।");
+            
+            // साइनअप के तुरंत बाद लॉगआउट करें
+            firebase.auth().signOut().then(() => {
+                console.log("User logged out after signup.");
+            }).catch((error) => {
+                console.error("Error logging out:", error);
+            });
         })
         .catch((error) => {
             document.getElementById("error").innerHTML = error.message;
         })
         .finally(() => showSpinner(false));
 }
+
 
 function forgotPass() {
     const email = document.getElementById("email").value;
