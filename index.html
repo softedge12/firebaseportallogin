@@ -1,45 +1,97 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Auth System</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.5.0/mdb.min.css" rel="stylesheet">
+    <title>Auth Demo</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.5.0/mdb.min.css" rel="stylesheet" />
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.5.0/mdb.min.js"></script>
     <link href="./index.css" rel="stylesheet" />
-</head>
-<body class="d-flex justify-content-center p-5">
+  </head>
+  <body class="d-flex justify-content-center p-5">
     <div class="card">
-        <div class="card-header">
-            <center><h3 id="formTitle">Login</h3></center>
-        </div>
+      <div class="card-header">
+        <center><h3 id="formTitle">Login Form</h3></center>
+      </div>
+      
+      <form id="authForm" class="card-body px-5 py-4" onsubmit="handleAuth(event)">
+        <center><small><span id="error" style="color: red"></span></small></center>
+        <center>
+          <label class="custom-field">
+            <input id="email" type="text" class="input" required />
+            <span class="placeholder">Email Id</span>
+          </label><br />
+          <label class="custom-field">
+            <input id="password" type="password" class="input" required minlength="6" />
+            <span class="placeholder">Password</span>
+          </label>
+        </center><br /><br />
         
-        <form id="authForm" class="card-body px-5 py-4">
-            <center><small><span id="error" style="color: red"></span></small></center>
-            <center>
-                <label class="custom-field">
-                    <input id="email" type="email" class="input" required />
-                    <span class="placeholder">Email Id</span>
-                </label><br />
-                <label class="custom-field">
-                    <input id="password" type="password" class="input" required />
-                    <span class="placeholder">Password</span>
-                </label>
-            </center><br />
-            
-            <a href="#" onclick="forgotPass()">Forgot Password?</a>
-            
-            <center>
-                <button type="button" id="authButton" class="btn btn-primary" onclick="login()">Login</button>
-                <button type="button" class="btn btn-secondary" onclick="toggleForm()">Switch to Sign Up</button>
-            </center>
-        </form>
+        <a href="#" onclick="forgotPass()" id="forgotLink">Forgot Password</a>
+        <center>
+          <button type="submit" class="btn btn-primary" id="authButton">Login</button>
+          <button type="button" class="btn btn-secondary" onclick="toggleForm()">Sign Up</button>
+        </center>
+      </form>
+    </div>
+
+    <!-- Spinner -->
+    <div id="loadingSpinner" class="d-none spinner-border text-primary" role="status">
+      <span class="visually-hidden">Processing...</span>
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-database-compat.js"></script>
     <script src="firebase.js"></script>
-    <script src="index.js"></script>
-</body>
+    <script>
+      let isLogin = true;
+
+      function toggleForm() {
+        isLogin = !isLogin;
+        document.getElementById('formTitle').innerText = isLogin ? 'Login Form' : 'Sign Up Form';
+        document.getElementById('authButton').innerText = isLogin ? 'Login' : 'Sign Up';
+        document.getElementById('forgotLink').style.display = isLogin ? 'inline' : 'none';
+      }
+
+      function showSpinner(show) {
+        document.getElementById("loadingSpinner").classList.toggle("d-none", !show);
+      }
+
+      function handleAuth(event) {
+        event.preventDefault();
+        showSpinner(true);
+        
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+
+        if (password.length < 6) {
+          document.getElementById("error").innerText = "Password must be at least 6 characters long.";
+          showSpinner(false);
+          return;
+        }
+
+        if (isLogin) {
+          firebase.auth().signInWithEmailAndPassword(email, password)
+            .then(() => location.reload())
+            .catch(error => document.getElementById("error").innerText = error.message)
+            .finally(() => showSpinner(false));
+        } else {
+          firebase.auth().createUserWithEmailAndPassword(email, password)
+            .then(() => alert("Sign Up Successful! You can log in now."))
+            .catch(error => document.getElementById("error").innerText = error.message)
+            .finally(() => showSpinner(false));
+        }
+      }
+
+      function forgotPass() {
+        const email = document.getElementById("email").value;
+        firebase.auth().sendPasswordResetEmail(email)
+          .then(() => alert("Reset link sent to your email"))
+          .catch(error => document.getElementById("error").innerText = error.message);
+      }
+    </script>
+  </body>
 </html>
