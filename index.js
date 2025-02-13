@@ -32,7 +32,12 @@ function login() {
     const password = document.getElementById("loginPassword").value;
 
     if (password.length < 6) {
-        document.getElementById("error").innerHTML = "Password must be at least 6 characters long.";
+        const errorElement = document.getElementById("error");
+        if (errorElement) {
+            errorElement.innerHTML = "Password must be at least 6 characters long.";
+        } else {
+            alert("Password must be at least 6 characters long.");
+        }
         showSpinner(false);
         return;
     }
@@ -42,10 +47,16 @@ function login() {
             checkExpiry(userCredential.user);
         })
         .catch((error) => {
-            document.getElementById("error").innerHTML = error.message;
+            const errorElement = document.getElementById("error");
+            if (errorElement) {
+                errorElement.innerHTML = error.message;
+            } else {
+                alert(error.message);
+            }
         })
         .finally(() => showSpinner(false));
 }
+
 
 // 🆕 SignUp Function (सिर्फ email स्टोर होगी)
 function signUp() {
