@@ -1,38 +1,41 @@
 @import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@700&display=swap');
 
 body {
-    background: #F8F8F8;
+    background: rgba(50, 117, 249, 30%);
     font-family: 'Roboto', sans-serif;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
     min-height: 100vh;
-    padding: 10px;
+    margin: 20px 0;
 }
 
-/* कार्ड को सभी डिवाइसेस के लिए सही चौड़ाई देने के लिए */
+/* कार्ड को सभी डिवाइसेस के लिए संतुलित आकार देना */
 .card {
-    width: 100%;
-    max-width: 400px; /* लैपटॉप और मोबाइल के लिए */
+    width: 90%;
+    max-width: 420px;  /* मोबाइल और बड़ी स्क्रीन दोनों के लिए बैलेंस */
+    margin-top: 30px;
     padding: 15px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
+    border-radius: 15px;
+    animation: fadeIn 1s ease-in-out;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
 }
 
-/* फॉर्म हेडिंग को स्टाइल करना */
+/* हेडर को आकर्षक बनाना */
 .card-header {
-    background-color: #007bff;
-    color: white;
+    background-color: #3275F9 !important;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
     text-align: center;
-    padding: 10px;
-    border-radius: 10px 10px 0 0;
-    font-size: 18px;
+    color: white;
+    padding: 12px;
+    font-size: 20px;
 }
 
-/* कस्टम इनपुट फील्ड */
+/* इनपुट फील्ड का डिजाइन */
 .custom-field {
     position: relative;
-    font-size: 14px;
+    font-size: 16px;
     padding-top: 20px;
     width: 100%;
 }
@@ -41,13 +44,13 @@ body {
     padding: 12px;
     width: 100%;
     font-size: 14px;
-    border-radius: 5px;
+    border-radius: 8px;
     border: 1.5px solid gray;
     outline-color: deepskyblue;
     transition: all 0.3s ease-in-out;
 }
 
-/* फील्ड के अंदर प्लेसहोल्डर को स्टाइल करना */
+/* प्लेसहोल्डर डिजाइन */
 .custom-field .placeholder {
     position: absolute;
     left: 12px;
@@ -66,29 +69,40 @@ body {
     padding: 2px 5px;
 }
 
-/* बटन को फुल-विथ और स्टाइल देना */
+/* बटन को स्टाइल देना */
 .btn {
     font-size: 16px;
-    padding: 10px;
+    padding: 12px;
     width: 100%;
     margin-top: 10px;
-    border-radius: 5px;
+    border-radius: 8px;
 }
 
-/* लिंक को स्टाइल देना */
+.btn-primary {
+    background-color: #3275F9;
+    border: none;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    border: none;
+}
+
+/* 'Forgot Password' लिंक को स्टाइल देना */
 a {
     display: block;
     text-align: center;
     margin-top: 10px;
     text-decoration: none;
-    color: #007bff;
+    color: #3275F9;
+    font-weight: bold;
 }
 
 a:hover {
     text-decoration: underline;
 }
 
-/* स्पिनर को सेंटर में लाने के लिए */
+/* स्पिनर का स्थान */
 #loadingSpinner {
     position: absolute;
     top: 50%;
@@ -96,14 +110,38 @@ a:hover {
     transform: translate(-50%, -50%);
 }
 
-/* मोडल कंटेंट को स्टाइल देना */
+/* मोडल को आकर्षक बनाना */
 .modal-content {
     border-radius: 10px;
 }
 
-/* छोटे डिवाइसेस (मोबाइल) के लिए सुधार */
-@media (max-width: 480px) {
+/* मोबाइल व्यू के लिए सुधार */
+@media (max-width: 768px) {
     .card {
-        max-width: 90%;
+        width: 95%;
+        max-width: 380px;
+    }
+}
+
+@media (max-width: 576px) {
+    .card {
+        width: 98%;
+        max-width: 350px;
+    }
+
+    .input-group-text {
+        font-size: 0.9rem;
+    }
+}
+
+/* Smooth fade-in animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
     }
 }
