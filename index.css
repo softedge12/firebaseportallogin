@@ -3,17 +3,33 @@
 body {
     background: #F8F8F8;
     font-family: 'Roboto', sans-serif;
-}
-
-/* Centering the card properly */
-.container {
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
+    padding: 10px;
 }
 
-/* Form fields styling */
+/* कार्ड को सभी डिवाइसेस के लिए सही चौड़ाई देने के लिए */
+.card {
+    width: 100%;
+    max-width: 400px; /* लैपटॉप और मोबाइल के लिए */
+    padding: 15px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+/* फॉर्म हेडिंग को स्टाइल करना */
+.card-header {
+    background-color: #007bff;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    border-radius: 10px 10px 0 0;
+    font-size: 18px;
+}
+
+/* कस्टम इनपुट फील्ड */
 .custom-field {
     position: relative;
     font-size: 14px;
@@ -25,11 +41,13 @@ body {
     padding: 12px;
     width: 100%;
     font-size: 14px;
-    border-radius: 3px;
+    border-radius: 5px;
     border: 1.5px solid gray;
     outline-color: deepskyblue;
+    transition: all 0.3s ease-in-out;
 }
 
+/* फील्ड के अंदर प्लेसहोल्डर को स्टाइल करना */
 .custom-field .placeholder {
     position: absolute;
     left: 12px;
@@ -48,12 +66,44 @@ body {
     padding: 2px 5px;
 }
 
+/* बटन को फुल-विथ और स्टाइल देना */
 .btn {
     font-size: 16px;
     padding: 10px;
+    width: 100%;
+    margin-top: 10px;
+    border-radius: 5px;
 }
 
-/* Modal Styling */
+/* लिंक को स्टाइल देना */
+a {
+    display: block;
+    text-align: center;
+    margin-top: 10px;
+    text-decoration: none;
+    color: #007bff;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* स्पिनर को सेंटर में लाने के लिए */
+#loadingSpinner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* मोडल कंटेंट को स्टाइल देना */
 .modal-content {
     border-radius: 10px;
+}
+
+/* छोटे डिवाइसेस (मोबाइल) के लिए सुधार */
+@media (max-width: 480px) {
+    .card {
+        max-width: 90%;
+    }
 }
