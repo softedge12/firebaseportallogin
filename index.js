@@ -6,26 +6,22 @@ document.getElementById("signupForm").addEventListener("submit", (event) => {
     event.preventDefault();
 });
 
-// Toggle Login & Signup Forms
-function toggleForm() {
-    document.getElementById("loginForm").classList.toggle("d-none");
-    document.getElementById("signupForm").classList.toggle("d-none");
+firebase.auth().onAuthStateChanged((user) => {
+    if (user) {
+        checkExpiry(user);
+    }
+});
 
-    let title = document.getElementById("formTitle");
-    title.innerText = title.innerText === "Login Form" ? "Signup Form" : "Login Form";
-}
-
-// Show spinner
 function showSpinner(show) {
     const spinner = document.getElementById("loadingSpinner");
     spinner.classList.toggle("d-none", !show);
 }
 
-// Login Function
+// 🔹 LOGIN FUNCTION
 function login() {
     showSpinner(true);
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
+    const email = document.getElementById("loginEmail").value;
+    const password = document.getElementById("loginPassword").value;
 
     firebase.auth().signInWithEmailAndPassword(email, password)
         .then((userCredential) => {
@@ -38,31 +34,37 @@ function login() {
         .finally(() => showSpinner(false));
 }
 
-// Signup Function
+// 🔹 SIGNUP FUNCTION
 function signUp() {
     showSpinner(true);
-    const email = document.getElementById("signupEmail").value;
-    const password = document.getElementById("signupPassword").value;
+    const email = document.getElementById("signUpEmail").value;
+    const password = document.getElementById("signUpPassword").value;
 
     if (password.length < 6) {
-        document.getElementById("signupError").innerText = "Password must be at least 6 characters!";
+        document.getElementById("signUpError").innerHTML = "पासवर्ड कम से कम 6 अंकों का होना चाहिए।";
         showSpinner(false);
         return;
     }
 
     firebase.auth().createUserWithEmailAndPassword(email, password)
-        .then(() => {
-            alert("आप सफलतापूर्वक साइनअप हो गए हैं। कृपया 24 घंटे बाद लॉगिन करें।");
+        .then((userCredential) => {
+            const user = userCredential.user;
+            firebase.database().ref("users/" + user.uid).set({
+                email: email,
+                pages: []
+            });
+            alert("साइनअप सफल! कृपया लॉगिन करें।");
+            toggleForms();
         })
         .catch((error) => {
-            document.getElementById("signupError").innerHTML = error.message;
+            document.getElementById("signUpError").innerHTML = error.message;
         })
         .finally(() => showSpinner(false));
 }
 
-// Forgot Password
 function forgotPass() {
-    const email = document.getElementById("email").value;
+    const email = document.getElementById("loginEmail").value;
+
     firebase.auth().sendPasswordResetEmail(email)
         .then(() => {
             alert("Reset link sent to your email id");
@@ -70,4 +72,12 @@ function forgotPass() {
         .catch((error) => {
             document.getElementById("error").innerHTML = error.message;
         });
+}
+
+// 🔹 FORM TOGGLE FUNCTION
+function toggleForms() {
+    document.getElementById("loginForm").classList.toggle("d-none");
+    document.getElementById("signupForm").classList.toggle("d-none");
+    document.getElementById("formTitle").innerText =
+        document.getElementById("loginForm").classList.contains("d-none") ? "Sign Up Form" : "Login Form";
 }
