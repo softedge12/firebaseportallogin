@@ -14,46 +14,25 @@
   <body class="d-flex justify-content-center p-5">
     <div class="card">
       <div class="card-header">
-        <center><h3 id="formTitle">Login Form</h3></center>
+        <center><h3>Login Form</h3></center>
       </div>
-
-      <!-- Login Form -->
-      <form id="loginForm" class="card-body px-5 py-4">
+      <form onsubmit="login()" id="loginForm" class="card-body px-5 py-4">
         <center><small><span id="error" style="color: red"></span></small></center>
         <center>
           <label class="custom-field">
-            <input id="loginEmail" type="text" class="input" required />
+            <input id="email" type="text" class="input" required />
             <span class="placeholder">Email Id</span>
           </label><br />
           <label class="custom-field">
-            <input id="loginPassword" type="password" class="input" required />
+            <input id="password" type="password" class="input" required />
             <span class="placeholder">Password</span>
           </label>
         </center><br /><br />
         <a href="#" onclick="forgotPass()">Forgot Password</a>
         <center>
           <button type="submit" class="btn btn-primary">Login</button>
+          <button onclick="signUp()" class="btn btn-secondary">Sign Up</button>
         </center>
-        <center><small><a href="#" onclick="toggleForms()">New user? Sign Up</a></small></center>
-      </form>
-
-      <!-- Signup Form (Initially Hidden) -->
-      <form id="signupForm" class="card-body px-5 py-4 d-none">
-        <center><small><span id="errorSignup" style="color: red"></span></small></center>
-        <center>
-          <label class="custom-field">
-            <input id="signupEmail" type="text" class="input" required />
-            <span class="placeholder">Email Id</span>
-          </label><br />
-          <label class="custom-field">
-            <input id="signupPassword" type="password" class="input" required />
-            <span class="placeholder">Password</span>
-          </label>
-        </center><br /><br />
-        <center>
-          <button type="submit" class="btn btn-success">Sign Up</button>
-        </center>
-        <center><small><a href="#" onclick="toggleForms()">Already have an account? Login</a></small></center>
       </form>
     </div>
 
@@ -62,9 +41,28 @@
       <span class="visually-hidden">Loading...</span>
     </div>
 
+    <!-- Page Selection Modal -->
+    <div class="modal fade" id="pageSelectionModal" tabindex="-1" aria-labelledby="pageSelectionModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="pageSelectionModalLabel">Select a Page</h5>
+            <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <ul id="pageList" class="list-group"></ul>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-mdb-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-database-compat.js"></script>
+
     <script src="firebase.js"></script>
     <script src="index.js"></script>
   </body>
