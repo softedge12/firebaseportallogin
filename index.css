@@ -1,147 +1,59 @@
-@import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@700&display=swap');
-
-body {
-    background: rgba(50, 117, 249, 30%);
-    font-family: 'Roboto', sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    min-height: 100vh;
-    margin: 20px 0;
-}
-
-/* कार्ड को सभी डिवाइसेस के लिए संतुलित आकार देना */
-.card {
-    width: 90%;
-    max-width: 420px;  /* मोबाइल और बड़ी स्क्रीन दोनों के लिए बैलेंस */
-    margin-top: 30px;
-    padding: 15px;
-    border-radius: 15px;
-    animation: fadeIn 1s ease-in-out;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-}
-
-/* हेडर को आकर्षक बनाना */
-.card-header {
-    background-color: #3275F9 !important;
-    border-top-left-radius: 15px;
-    border-top-right-radius: 15px;
-    text-align: center;
-    color: white;
-    padding: 12px;
-    font-size: 20px;
-}
-
-/* इनपुट फील्ड का डिजाइन */
-.custom-field {
-    position: relative;
-    font-size: 16px;
-    padding-top: 20px;
-    width: 100%;
-}
-
-.custom-field input {
-    padding: 12px;
-    width: 100%;
-    font-size: 14px;
-    border-radius: 8px;
-    border: 1.5px solid gray;
-    outline-color: deepskyblue;
-    transition: all 0.3s ease-in-out;
-}
-
-/* प्लेसहोल्डर डिजाइन */
-.custom-field .placeholder {
-    position: absolute;
-    left: 12px;
-    top: calc(50% + 10px);
-    transform: translateY(-50%);
-    color: #aaa;
-    transition: all 0.3s ease;
-}
-
-.custom-field input:valid + .placeholder,
-.custom-field input:focus + .placeholder {
-    top: 8px;
-    font-size: 12px;
-    color: #222;
-    background: white;
-    padding: 2px 5px;
-}
-
-/* बटन को स्टाइल देना */
-.btn {
-    font-size: 16px;
-    padding: 12px;
-    width: 100%;
-    margin-top: 10px;
-    border-radius: 8px;
-}
-
-.btn-primary {
-    background-color: #3275F9;
-    border: none;
-}
-
-.btn-secondary {
-    background-color: #6c757d;
-    border: none;
-}
-
-/* 'Forgot Password' लिंक को स्टाइल देना */
-a {
-    display: block;
-    text-align: center;
-    margin-top: 10px;
-    text-decoration: none;
-    color: #3275F9;
-    font-weight: bold;
-}
-
-a:hover {
-    text-decoration: underline;
-}
-
-/* स्पिनर का स्थान */
-#loadingSpinner {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}
-
-/* मोडल को आकर्षक बनाना */
-.modal-content {
-    border-radius: 10px;
-}
-
-/* मोबाइल व्यू के लिए सुधार */
-@media (max-width: 768px) {
-    .card {
-        width: 95%;
-        max-width: 380px;
+  body {
+      background-color: rgba(50, 117, 249, 30%);
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      margin: 20px 0;
     }
-}
 
-@media (max-width: 576px) {
     .card {
-        width: 98%;
-        max-width: 350px;
+      width: 90%;
+      max-width: 400px;
+      margin-top: 30px;
+      border-radius: 25px;
+      animation: fadeIn 1s ease-in-out;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-header {
+      background-color: #3275F9 !important;
+      border-top-left-radius: 25px;
+      border-top-right-radius: 25px;
     }
 
     .input-group-text {
-        font-size: 0.9rem;
+      width: 100px;
+      display: inline-block;
     }
-}
 
-/* Smooth fade-in animation */
-@keyframes fadeIn {
-    from {
+    .mycolor {
+      background-color: #3275F9;
+    }
+
+    .color {
+      color: #3275F9;
+    }
+
+    @keyframes fadeIn {
+      from {
         opacity: 0;
         transform: scale(0.8);
-    }
-    to {
+      }
+      to {
         opacity: 1;
         transform: scale(1);
+      }
     }
-}
+
+    @media (max-width: 768px) {
+      .card {
+        width: 95%;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .input-group-text {
+        font-size: 0.9rem;
+      }
+    }
