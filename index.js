@@ -1,127 +1,107 @@
-document.addEventListener("DOMContentLoaded", function () {
-    // DOM elements
-    const loginForm = document.getElementById("login-form");
-    const signupForm = document.getElementById("signup-form");
-    const switchToSignup = document.getElementById("switchToSignup");
-    const switchToLogin = document.getElementById("switchToLogin");
+document.getElementById("loginForm").addEventListener("submit", (event) => event.preventDefault());
+document.getElementById("signupForm").addEventListener("submit", (event) => event.preventDefault());
 
-    // Default: Show Login Form, Hide Signup Form
-    signupForm.style.display = "none";
-
-    // Switch to Signup Form
-    switchToSignup.addEventListener("click", function () {
-        loginForm.style.display = "none";
-        signupForm.style.display = "block";
-    });
-
-    // Switch to Login Form
-    switchToLogin.addEventListener("click", function () {
-        signupForm.style.display = "none";
-        loginForm.style.display = "block";
-    });
+firebase.auth().onAuthStateChanged((user) => {
+    if (user) {
+        checkExpiry(user);
+    }
 });
 
-// Show/Hide Spinner
-function showSpinner(show) {
-    const spinner = document.getElementById("loadingSpinner");
-    spinner.classList.toggle("d-none", !show);
+// फॉर्म टॉगल करने का फ़ंक्शन
+function toggleForm() {
+    const loginForm = document.getElementById("loginForm");
+    const signupForm = document.getElementById("signupForm");
+    const formTitle = document.getElementById("formTitle");
+
+    if (loginForm.classList.contains("d-none")) {
+        loginForm.classList.remove("d-none");
+        signupForm.classList.add("d-none");
+        formTitle.innerText = "Login Form";
+    } else {
+        signupForm.classList.remove("d-none");
+        loginForm.classList.add("d-none");
+        formTitle.innerText = "Sign Up Form";
+    }
 }
 
-// 🔹 LOGIN FUNCTION
-function login() {
+// स्पिनर दिखाने का फ़ंक्शन
+function showSpinner(show) {
+    document.getElementById("loadingSpinner").classList.toggle("d-none", !show);
+}
+
+// **लॉगिन फ़ंक्शन**
+function login(event) {
+    event.preventDefault();
     showSpinner(true);
-    const email = document.getElementById("login-email").value;
-    const password = document.getElementById("login-password").value;
+
+    const email = document.getElementById("loginEmail").value;
+    const password = document.getElementById("loginPassword").value;
 
     firebase.auth().signInWithEmailAndPassword(email, password)
         .then((userCredential) => {
-            const user = userCredential.user;
-            checkUserData(user);
+            checkRedirectPage(userCredential.user);
         })
         .catch((error) => {
-            document.getElementById("error").innerHTML = error.message;
+            document.getElementById("error").innerText = error.message;
         })
         .finally(() => showSpinner(false));
 }
 
-// 🔹 SIGNUP FUNCTION
-function signUp() {
+// **साइनअप फ़ंक्शन**
+function signUp(event) {
+    event.preventDefault();
     showSpinner(true);
-    const email = document.getElementById("signup-email").value;
-    const password = document.getElementById("signup-password").value;
+
+    const email = document.getElementById("signupEmail").value;
+    const password = document.getElementById("signupPassword").value;
 
     firebase.auth().createUserWithEmailAndPassword(email, password)
         .then((userCredential) => {
             const user = userCredential.user;
-            saveUserData(user.email);
+            firebase.database().ref("users/" + user.uid).set({
+                email: email,
+                expiry: "",  // एडमिन द्वारा सेट किया जाएगा
+                redirectPage: "" // एडमिन द्वारा सेट किया जाएगा
+            });
+
+            alert("आप सफलतापूर्वक साइनअप हो गए हैं। कृपया 24 घंटे बाद लॉगिन करें।");
         })
         .catch((error) => {
-            document.getElementById("error").innerHTML = error.message;
+            document.getElementById("signupError").innerText = error.message;
         })
         .finally(() => showSpinner(false));
 }
 
-// 🔹 SAVE USER DATA IN FIREBASE (Signup के बाद)
-function saveUserData(email) {
-    const usersRef = firebase.database().ref("users");
-    
-    // नया यूज़र डेटा ऐड करें (Expiry और Redirect Page मैन्युअली एडमिन डालेगा)
-    usersRef.push({
-        email: email,
-        expiryDate: "", // एडमिन बाद में डालेगा
-        redirectPage: "" // एडमिन बाद में डालेगा
-    }).then(() => {
-        alert("आप सफलतापूर्वक साइनअप हो गए हैं। कृपया 24 घंटे बाद लॉगिन करें।");
-        firebase.auth().signOut();
-    }).catch((error) => {
-        console.error("Error saving user data:", error);
-    });
-}
-
-// 🔹 CHECK USER DATA ON LOGIN
-function checkUserData(user) {
-    const userEmail = user.email;
-    const userRef = firebase.database().ref("users").orderByChild("email").equalTo(userEmail);
-
-    userRef.once("value", (snapshot) => {
-        if (snapshot.exists()) {
-            snapshot.forEach(userData => {
-                const expiryDate = new Date(userData.val().expiryDate);
-                const currentDate = new Date();
-                const redirectPage = userData.val().redirectPage;
-
-                if (!expiryDate || !redirectPage) {
-                    alert("आपकी लॉगिन सुविधा अभी उपलब्ध नहीं है। कृपया बाद में प्रयास करें।");
-                    firebase.auth().signOut();
-                    return;
-                }
-
-                if (currentDate > expiryDate) {
-                    alert("आपकी सदस्यता समाप्त हो गई है।");
-                    firebase.auth().signOut();
-                    return;
-                }
-
-                window.location.href = redirectPage;
-            });
-        } else {
-            alert("User data not found.");
-            firebase.auth().signOut();
-        }
-    }).catch((error) => {
-        document.getElementById("error").innerHTML = error.message;
-    });
-}
-
-// 🔹 FORGOT PASSWORD FUNCTION
+// **पासवर्ड भूलने पर ईमेल भेजने का फ़ंक्शन**
 function forgotPass() {
-    const email = document.getElementById("login-email").value;
+    const email = document.getElementById("loginEmail").value;
 
     firebase.auth().sendPasswordResetEmail(email)
         .then(() => {
             alert("Reset link sent to your email id");
         })
         .catch((error) => {
-            document.getElementById("error").innerHTML = error.message;
+            document.getElementById("error").innerText = error.message;
+        });
+}
+
+// **एक्सपायरी डेट और रीडायरेक्शन चेक करने का फ़ंक्शन**
+function checkExpiry(user) {
+    firebase.database().ref("users/" + user.uid).once("value")
+        .then(snapshot => {
+            if (snapshot.exists() && snapshot.val().expiry && snapshot.val().redirectPage) {
+                const expiryDate = new Date(snapshot.val().expiry);
+                const currentDate = new Date();
+
+                if (currentDate > expiryDate) {
+                    alert("Your account has expired. You will be logged out.");
+                    firebase.auth().signOut().then(() => location.replace("index.html"));
+                } else {
+                    window.location.href = snapshot.val().redirectPage;
+                }
+            } else {
+                alert("आपकी लॉगिन सुविधा अभी उपलब्ध नहीं है। कृपया बाद में प्रयास करें।");
+                firebase.auth().signOut().then(() => location.replace("index.html"));
+            }
         });
 }
