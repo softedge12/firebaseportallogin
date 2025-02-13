@@ -5,39 +5,59 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Auth Demo</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet" />
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.5.0/mdb.min.css" rel="stylesheet" />
+
+    <!-- Font Awesome & Google Fonts -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet">
+
+    <!-- MDB Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.5.0/mdb.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="./index.css" rel="stylesheet">
+    
+    <!-- MDB Bootstrap JS -->
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.5.0/mdb.min.js"></script>
-    <link href="./index.css" rel="stylesheet" />
   </head>
-  <body class="d-flex justify-content-center p-5">
-    <div class="card">
-      <div class="card-header">
-        <center><h3>Login Form</h3></center>
+
+  <body>
+    <div class="container d-flex justify-content-center align-items-center min-vh-100">
+      <div class="card shadow-lg p-4 w-100" style="max-width: 400px;">
+        <div class="card-header text-center">
+          <h3>Login Form</h3>
+        </div>
+
+        <form id="loginForm" class="card-body">
+          <center><small><span id="error" style="color: red;"></span></small></center>
+
+          <div class="mb-3">
+            <label class="custom-field w-100">
+              <input id="email" type="text" class="input form-control" required>
+              <span class="placeholder">Email Id</span>
+            </label>
+          </div>
+
+          <div class="mb-3">
+            <label class="custom-field w-100">
+              <input id="password" type="password" class="input form-control" required>
+              <span class="placeholder">Password</span>
+            </label>
+          </div>
+
+          <div class="text-end">
+            <a href="#" onclick="forgotPass()">Forgot Password?</a>
+          </div>
+
+          <div class="text-center mt-3">
+            <button type="submit" class="btn btn-primary w-100">Login</button>
+            <button type="button" onclick="signUp()" class="btn btn-secondary w-100 mt-2">Sign Up</button>
+          </div>
+        </form>
       </div>
-      <form onsubmit="login()" id="loginForm" class="card-body px-5 py-4">
-        <center><small><span id="error" style="color: red"></span></small></center>
-        <center>
-          <label class="custom-field">
-            <input id="email" type="text" class="input" required />
-            <span class="placeholder">Email Id</span>
-          </label><br />
-          <label class="custom-field">
-            <input id="password" type="password" class="input" required />
-            <span class="placeholder">Password</span>
-          </label>
-        </center><br /><br />
-        <a href="#" onclick="forgotPass()">Forgot Password</a>
-        <center>
-          <button type="submit" class="btn btn-primary">Login</button>
-          <button onclick="signUp()" class="btn btn-secondary">Sign Up</button>
-        </center>
-      </form>
     </div>
 
     <!-- Spinner -->
-    <div id="loadingSpinner" class="d-none spinner-border text-primary" role="status">
+    <div id="loadingSpinner" class="d-none spinner-border text-primary position-fixed top-50 start-50 translate-middle" role="status">
       <span class="visually-hidden">Loading...</span>
     </div>
 
@@ -59,10 +79,12 @@
       </div>
     </div>
 
+    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-database-compat.js"></script>
 
+    <!-- Custom Scripts -->
     <script src="firebase.js"></script>
     <script src="index.js"></script>
   </body>
