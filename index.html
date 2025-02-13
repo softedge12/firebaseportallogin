@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Auth System</title>
+    <title>Auth Demo</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.5.0/mdb.min.css" rel="stylesheet" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.5.0/mdb.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.5.0/mdb.min.js"></script>
     <link href="./index.css" rel="stylesheet" />
   </head>
   <body class="d-flex justify-content-center p-5">
@@ -16,7 +16,9 @@
       <div class="card-header">
         <center><h3 id="formTitle">Login Form</h3></center>
       </div>
-      <form onsubmit="handleAuth(event)" id="authForm" class="card-body px-5 py-4">
+
+      <!-- Login Form -->
+      <form onsubmit="login()" id="loginForm" class="card-body px-5 py-4">
         <center><small><span id="error" style="color: red"></span></small></center>
         <center>
           <label class="custom-field">
@@ -24,30 +26,45 @@
             <span class="placeholder">Email Id</span>
           </label><br />
           <label class="custom-field">
-            <input id="password" type="password" class="input" required minlength="6"/>
+            <input id="password" type="password" class="input" required />
             <span class="placeholder">Password</span>
           </label>
-        </center><br /><br />
+        </center><br />
         <a href="#" onclick="forgotPass()">Forgot Password</a>
         <center>
-          <button type="submit" class="btn btn-primary">Submit</button>
+          <button type="submit" class="btn btn-primary">Login</button>
+          <p><a href="#" onclick="toggleForm()">Don't have an account? Sign Up</a></p>
         </center>
+      </form>
+
+      <!-- Signup Form -->
+      <form onsubmit="signUp()" id="signupForm" class="card-body px-5 py-4 d-none">
+        <center><small><span id="signupError" style="color: red"></span></small></center>
         <center>
-          <p><a href="#" onclick="toggleForm()">Switch to <span id="toggleText">Sign Up</span></a></p>
+          <label class="custom-field">
+            <input id="signupEmail" type="text" class="input" required />
+            <span class="placeholder">Email Id</span>
+          </label><br />
+          <label class="custom-field">
+            <input id="signupPassword" type="password" class="input" required />
+            <span class="placeholder">Password</span>
+          </label>
+        </center><br />
+        <center>
+          <button type="submit" class="btn btn-success">Sign Up</button>
+          <p><a href="#" onclick="toggleForm()">Already have an account? Login</a></p>
         </center>
       </form>
     </div>
 
     <!-- Spinner -->
     <div id="loadingSpinner" class="d-none spinner-border text-primary" role="status">
-      <span class="visually-hidden">Loading...</span>
+      <span class="visually-hidden">Processing...</span>
     </div>
 
-    <!-- Firebase Scripts -->
     <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-database-compat.js"></script>
-
     <script src="firebase.js"></script>
     <script src="index.js"></script>
   </body>
