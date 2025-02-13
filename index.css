@@ -1,59 +1,116 @@
-  body {
-      background-color: rgba(50, 117, 249, 30%);
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      min-height: 100vh;
-      margin: 20px 0;
-    }
+body {
+  background-color: rgba(50, 117, 249, 30%);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+  margin: 20px 0;
+}
 
-    .card {
-      width: 90%;
-      max-width: 400px;
-      margin-top: 30px;
-      border-radius: 25px;
-      animation: fadeIn 1s ease-in-out;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-    }
+.card {
+  width: 90%;
+  max-width: 400px;
+  margin-top: 30px;
+  border-radius: 25px;
+  animation: fadeIn 1s ease-in-out;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  background-color: white;
+  padding: 20px;
+}
 
-    .card-header {
-      background-color: #3275F9 !important;
-      border-top-left-radius: 25px;
-      border-top-right-radius: 25px;
-    }
+.card-header {
+  background-color: #3275F9 !important;
+  border-top-left-radius: 25px;
+  border-top-right-radius: 25px;
+  text-align: center;
+  color: white;
+  padding: 15px;
+  font-size: 20px;
+}
 
-    .input-group-text {
-      width: 100px;
-      display: inline-block;
-    }
+.input-group-text {
+  width: 100px;
+  display: inline-block;
+}
 
-    .mycolor {
-      background-color: #3275F9;
-    }
+.mycolor {
+  background-color: #3275F9;
+}
 
-    .color {
-      color: #3275F9;
-    }
+.color {
+  color: #3275F9;
+}
 
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: scale(0.8);
-      }
-      to {
-        opacity: 1;
-        transform: scale(1);
-      }
-    }
+/* Login Form Styling */
+.custom-field {
+  position: relative;
+  width: 100%;
+  display: block;
+  margin-bottom: 20px;
+}
 
-    @media (max-width: 768px) {
-      .card {
-        width: 95%;
-      }
-    }
+.input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  outline: none;
+  transition: border-color 0.3s;
+}
 
-    @media (max-width: 576px) {
-      .input-group-text {
-        font-size: 0.9rem;
-      }
-    }
+.input:focus {
+  border-color: #3275F9;
+  box-shadow: 0 0 5px rgba(50, 117, 249, 0.5);
+}
+
+.placeholder {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 14px;
+  color: #aaa;
+  pointer-events: none;
+  transition: 0.2s ease-out;
+}
+
+.input:focus + .placeholder,
+.input:not(:placeholder-shown) + .placeholder {
+  top: 5px;
+  font-size: 12px;
+  color: #3275F9;
+}
+
+.btn {
+  width: 48%;
+  margin: 5px;
+}
+
+/* Fade-in Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .card {
+    width: 95%;
+  }
+}
+
+@media (max-width: 576px) {
+  .input-group-text {
+    font-size: 0.9rem;
+  }
+  .btn {
+    width: 100%;
+  }
+}
