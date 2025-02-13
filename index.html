@@ -1,67 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Auth Demo</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet" />
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.5.0/mdb.min.css" rel="stylesheet" />
+    <title>Auth System</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.5.0/mdb.min.css" rel="stylesheet">
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.5.0/mdb.min.js"></script>
     <link href="./index.css" rel="stylesheet" />
-  </head>
-  <body class="d-flex justify-content-center p-5">
+</head>
+<body class="d-flex justify-content-center p-5">
     <div class="card">
-      <div class="card-header">
-        <center><h3 id="formTitle">Login Form</h3></center>
-      </div>
-
-      <!-- लॉगिन फॉर्म -->
-      <form onsubmit="login()" id="loginForm" class="card-body px-5 py-4">
-        <center><small><span id="error" style="color: red"></span></small></center>
-        <center>
-          <label class="custom-field">
-            <input id="email" type="text" class="input" required />
-            <span class="placeholder">Email Id</span>
-          </label><br />
-          <label class="custom-field">
-            <input id="password" type="password" class="input" required />
-            <span class="placeholder">Password</span>
-          </label>
-        </center><br /><br />
-        <a href="#" onclick="forgotPass()">Forgot Password</a>
-        <center>
-          <button type="submit" class="btn btn-primary">Login</button>
-          <button type="button" onclick="toggleForm()" class="btn btn-secondary">Sign Up</button>
-        </center>
-      </form>
-
-      <!-- साइनअप फॉर्म -->
-      <form onsubmit="signUp()" id="signupForm" class="card-body px-5 py-4 d-none">
-        <center><small><span id="signupError" style="color: red"></span></small></center>
-        <center>
-          <label class="custom-field">
-            <input id="signupEmail" type="text" class="input" required />
-            <span class="placeholder">Email Id</span>
-          </label><br />
-          <label class="custom-field">
-            <input id="signupPassword" type="password" class="input" required />
-            <span class="placeholder">Password</span>
-          </label>
-        </center><br /><br />
-        <center>
-          <button type="submit" class="btn btn-secondary">Sign Up</button>
-          <button type="button" onclick="toggleForm()" class="btn btn-primary">Back to Login</button>
-        </center>
-      </form>
+        <div class="card-header">
+            <center><h3 id="formTitle">Login</h3></center>
+        </div>
+        
+        <form id="authForm" class="card-body px-5 py-4">
+            <center><small><span id="error" style="color: red"></span></small></center>
+            <center>
+                <label class="custom-field">
+                    <input id="email" type="email" class="input" required />
+                    <span class="placeholder">Email Id</span>
+                </label><br />
+                <label class="custom-field">
+                    <input id="password" type="password" class="input" required />
+                    <span class="placeholder">Password</span>
+                </label>
+            </center><br />
+            
+            <a href="#" onclick="forgotPass()">Forgot Password?</a>
+            
+            <center>
+                <button type="button" id="authButton" class="btn btn-primary" onclick="login()">Login</button>
+                <button type="button" class="btn btn-secondary" onclick="toggleForm()">Switch to Sign Up</button>
+            </center>
+        </form>
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-database-compat.js"></script>
-
     <script src="firebase.js"></script>
     <script src="index.js"></script>
-  </body>
+</body>
 </html>
