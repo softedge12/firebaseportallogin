@@ -36,14 +36,22 @@ function signUp() {
 
     firebase.auth().createUserWithEmailAndPassword(email, password)
         .then((userCredential) => {
-            alert("आप सफलतापूर्वक साइनअप हो गए हैं। कृपया 24 घंटे बाद लॉगिन करें।");
+            const user = userCredential.user;
 
-            // साइनअप के तुरंत बाद लॉगआउट करें
-            firebase.auth().signOut().then(() => {
-                console.log("User logged out after signup.");
-            }).catch((error) => {
-                console.error("Error logging out:", error);
+            // ✅ अब ईमेल Firebase Realtime Database में सेव होगा  
+            firebase.database().ref("users").push({
+                email: email
+            }).then(() => {
+                alert("आप सफलतापूर्वक साइनअप हो गए हैं। कृपया 24 घंटे बाद लॉगिन करें।");
+
+                // ✅ साइनअप के बाद ऑटोमेटिक लॉगआउट  
+                firebase.auth().signOut().then(() => {
+                    console.log("User logged out after signup.");
+                }).catch((error) => {
+                    console.error("Error logging out:", error);
+                });
             });
+
         })
         .catch((error) => {
             document.getElementById("error").innerHTML = error.message;
