@@ -1,91 +1,65 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Auth Demo</title>
+    <title>Login Page</title>
 
-    <!-- Font Awesome & Google Fonts -->
+    <!-- Font & Bootstrap -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet">
-
-    <!-- MDB Bootstrap CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.5.0/mdb.min.css" rel="stylesheet">
-
-    <!-- Custom CSS -->
-    <link href="./index.css" rel="stylesheet">
     
-    <!-- MDB Bootstrap JS -->
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.5.0/mdb.min.js"></script>
-  </head>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="./index.css">
+</head>
 
-  <body>
+<body>
     <div class="container d-flex justify-content-center align-items-center min-vh-100">
-      <div class="card shadow-lg p-4 w-100" style="max-width: 400px;">
-        <div class="card-header text-center">
-          <h3>Login Form</h3>
+        <div class="card shadow-lg p-4 w-100" style="max-width: 400px;">
+            <div class="card-header text-center">
+                <h3>Login</h3>
+            </div>
+
+            <!-- ✔️ यहाँ id="loginForm" और method="POST" सही से सेट किया -->
+            <form id="loginForm" method="POST" class="card-body">
+                <center><small><span id="error" style="color: red;"></span></small></center>
+
+                <div class="mb-3">
+                    <label class="custom-field w-100">
+                        <!-- ✔️ Email Input में type="email" कर दिया -->
+                        <input id="email" type="email" class="input form-control" required>
+                        <span class="placeholder">Email Id</span>
+                    </label>
+                </div>
+
+                <div class="mb-3">
+                    <label class="custom-field w-100">
+                        <input id="password" type="password" class="input form-control" required>
+                        <span class="placeholder">Password</span>
+                    </label>
+                </div>
+
+                <div class="text-end">
+                    <a href="#" onclick="forgotPass()">Forgot Password?</a>
+                </div>
+
+                <div class="text-center mt-3">
+                    <!-- ✔️ यहाँ type="submit" सही कर दिया -->
+                    <button type="submit" class="btn btn-primary w-100">Login</button>
+                    <button type="button" onclick="signUp()" class="btn btn-secondary w-100 mt-2">Sign Up</button>
+                </div>
+            </form>
         </div>
-
-        <form id="loginForm" class="card-body">
-          <center><small><span id="error" style="color: red;"></span></small></center>
-
-          <div class="mb-3">
-            <label class="custom-field w-100">
-              <input id="email" type="text" class="input form-control" required>
-              <span class="placeholder">Email Id</span>
-            </label>
-          </div>
-
-          <div class="mb-3">
-            <label class="custom-field w-100">
-              <input id="password" type="password" class="input form-control" required>
-              <span class="placeholder">Password</span>
-            </label>
-          </div>
-
-          <div class="text-end">
-            <a href="#" onclick="forgotPass()">Forgot Password?</a>
-          </div>
-
-          <div class="text-center mt-3">
-            <button type="submit" class="btn btn-primary w-100">Login</button>
-            <button type="button" onclick="signUp()" class="btn btn-secondary w-100 mt-2">Sign Up</button>
-          </div>
-        </form>
-      </div>
     </div>
 
-    <!-- Spinner -->
-    <div id="loadingSpinner" class="d-none spinner-border text-primary position-fixed top-50 start-50 translate-middle" role="status">
-      <span class="visually-hidden">Loading...</span>
-    </div>
-
-    <!-- Page Selection Modal -->
-    <div class="modal fade" id="pageSelectionModal" tabindex="-1" aria-labelledby="pageSelectionModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="pageSelectionModalLabel">Select a Page</h5>
-            <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <ul id="pageList" class="list-group"></ul>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-mdb-dismiss="modal">Close</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Firebase SDK -->
+    <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-database-compat.js"></script>
 
-    <!-- Custom Scripts -->
+    <!-- Custom JS -->
     <script src="firebase.js"></script>
     <script src="index.js"></script>
-  </body>
+</body>
 </html>
