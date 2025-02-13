@@ -1,65 +1,110 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Page</title>
+    <title>Auth Demo</title>
 
-    <!-- Font & Bootstrap -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.5.0/mdb.min.css" rel="stylesheet">
-    
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="./index.css">
-</head>
+    <!-- Styles and UI Libraries -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.5.0/mdb.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.5.0/mdb.min.js"></script>
 
-<body>
-    <div class="container d-flex justify-content-center align-items-center min-vh-100">
-        <div class="card shadow-lg p-4 w-100" style="max-width: 400px;">
-            <div class="card-header text-center">
-                <h3>Login</h3>
-            </div>
+    <link href="./index.css" rel="stylesheet" />
+  </head>
+  
+  <body class="d-flex justify-content-center p-5">
+    <div class="card">
+      <div class="card-header">
+        <center><h3>Login Form</h3></center>
+      </div>
 
-            <!-- ✔️ यहाँ id="loginForm" और method="POST" सही से सेट किया -->
-            <form id="loginForm" method="POST" class="card-body">
-                <center><small><span id="error" style="color: red;"></span></small></center>
+      <!-- Login Form -->
+      <form id="loginForm" class="card-body px-5 py-4">
+        <center><small><span id="error" style="color: red"></span></small></center>
 
-                <div class="mb-3">
-                    <label class="custom-field w-100">
-                        <!-- ✔️ Email Input में type="email" कर दिया -->
-                        <input id="email" type="email" class="input form-control" required>
-                        <span class="placeholder">Email Id</span>
-                    </label>
-                </div>
+        <center>
+          <label class="custom-field">
+            <input id="email" type="text" class="input" required />
+            <span class="placeholder">Email Id</span>
+          </label><br />
 
-                <div class="mb-3">
-                    <label class="custom-field w-100">
-                        <input id="password" type="password" class="input form-control" required>
-                        <span class="placeholder">Password</span>
-                    </label>
-                </div>
+          <label class="custom-field">
+            <input id="password" type="password" class="input" required />
+            <span class="placeholder">Password</span>
+          </label>
+        </center><br /><br />
 
-                <div class="text-end">
-                    <a href="#" onclick="forgotPass()">Forgot Password?</a>
-                </div>
+        <a href="#" onclick="forgotPass()">Forgot Password</a>
 
-                <div class="text-center mt-3">
-                    <!-- ✔️ यहाँ type="submit" सही कर दिया -->
-                    <button type="submit" class="btn btn-primary w-100">Login</button>
-                    <button type="button" onclick="signUp()" class="btn btn-secondary w-100 mt-2">Sign Up</button>
-                </div>
-            </form>
-        </div>
+        <center>
+          <button type="submit" class="btn btn-primary">Login</button>
+          <button type="button" onclick="signUp()" class="btn btn-secondary">Sign Up</button>
+        </center>
+      </form>
     </div>
 
-    <!-- Firebase -->
+    <!-- Spinner -->
+    <div id="loadingSpinner" class="d-none spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+
+    <!-- Page Selection Modal -->
+    <div class="modal fade" id="pageSelectionModal" tabindex="-1" aria-labelledby="pageSelectionModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="pageSelectionModalLabel">Select a Page</h5>
+            <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <ul id="pageList" class="list-group"></ul>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-mdb-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Firebase Libraries -->
     <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-database-compat.js"></script>
 
-    <!-- Custom JS -->
     <script src="firebase.js"></script>
     <script src="index.js"></script>
-</body>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+        const loginForm = document.getElementById("loginForm");
+
+        loginForm.addEventListener("submit", function(event) {
+          event.preventDefault(); // Form Reload को रोकना
+
+          let email = document.getElementById("email").value;
+          let password = document.getElementById("password").value;
+          let errorElement = document.getElementById("error");
+
+          errorElement.innerHTML = "Logging in...";
+
+          firebase.auth().signInWithEmailAndPassword(email, password)
+            .then((userCredential) => {
+              let user = userCredential.user;
+              errorElement.innerHTML = "Login successful! Redirecting...";
+
+              firebase.database().ref("users/" + user.uid).once("value").then((snapshot) => {
+                let redirectPage = snapshot.val()?.redirectPage || "default.html";
+                window.location.href = redirectPage;
+              });
+            })
+            .catch((error) => {
+              errorElement.innerHTML = "Error: " + error.message;
+            });
+        });
+      });
+    </script>
+  </body>
 </html>
