@@ -1,4 +1,4 @@
-document.getElementById("loginForm").addEventListener("submit", (event) => {
+document.getElementById("loginBox").addEventListener("submit", (event) => {
     event.preventDefault();
 });
 
@@ -14,7 +14,7 @@ function showSpinner(show) {
 }
 
 function login() {
-    showSpinner(true); 
+    showSpinner(true);
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
 
@@ -31,26 +31,18 @@ function login() {
 
 function signUp() {
     showSpinner(true);
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
+    const email = document.getElementById("signupEmail").value;
+    const password = document.getElementById("signupPassword").value;
 
     firebase.auth().createUserWithEmailAndPassword(email, password)
-        .then((userCredential) => {
+        .then(() => {
             alert("आप सफलतापूर्वक साइनअप हो गए हैं। कृपया 24 घंटे बाद लॉगिन करें।");
-            
-            // साइनअप के तुरंत बाद लॉगआउट करें
-            firebase.auth().signOut().then(() => {
-                console.log("User logged out after signup.");
-            }).catch((error) => {
-                console.error("Error logging out:", error);
-            });
         })
         .catch((error) => {
-            document.getElementById("error").innerHTML = error.message;
+            document.getElementById("signupError").innerHTML = error.message;
         })
         .finally(() => showSpinner(false));
 }
-
 
 function forgotPass() {
     const email = document.getElementById("email").value;
@@ -63,6 +55,23 @@ function forgotPass() {
             document.getElementById("error").innerHTML = error.message;
         });
 }
+
+function toggleForms() {
+    const loginBox = document.getElementById("loginBox");
+    const signupBox = document.getElementById("signupBox");
+    const toggleBtn = document.querySelector(".toggle-btn");
+
+    if (loginBox.classList.contains("hidden")) {
+        loginBox.classList.remove("hidden");
+        signupBox.classList.add("hidden");
+        toggleBtn.innerText = "Sign Up";
+    } else {
+        loginBox.classList.add("hidden");
+        signupBox.classList.remove("hidden");
+        toggleBtn.innerText = "Login";
+    }
+}
+
 
 function checkExpiry(user) {
     const userEmail = user.email;
