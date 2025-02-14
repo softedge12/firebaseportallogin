@@ -64,11 +64,11 @@ function toggleForms() {
     if (loginBox.classList.contains("hidden")) {
         loginBox.classList.remove("hidden");
         signupBox.classList.add("hidden");
-        toggleBtn.innerText = "Sign Up";
+        toggleBtn.innerText = "Switch To Sign Up";
     } else {
         loginBox.classList.add("hidden");
         signupBox.classList.remove("hidden");
-        toggleBtn.innerText = "Login";
+        toggleBtn.innerText = "Switch To Login";
     }
 }
 
