@@ -1,116 +1,84 @@
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@700&display=swap');
+
 body {
-  background-color: rgba(50, 117, 249, 30%);
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  min-height: 100vh;
-  margin: 20px 0;
+    background: #F8F8F8;
+    font-family: 'Ubuntu', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
 }
 
-.card {
-  width: 90%;
-  max-width: 400px;
-  margin-top: 30px;
-  border-radius: 25px;
-  animation: fadeIn 1s ease-in-out;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-  background-color: white;
-  padding: 20px;
-}
-
-.card-header {
-  background-color: #3275F9 !important;
-  border-top-left-radius: 25px;
-  border-top-right-radius: 25px;
-  text-align: center;
-  color: white;
-  padding: 15px;
-  font-size: 20px;
-}
-
-.input-group-text {
-  width: 100px;
-  display: inline-block;
-}
-
-.mycolor {
-  background-color: #3275F9;
-}
-
-.color {
-  color: #3275F9;
-}
-
-/* Login Form Styling */
-.custom-field {
-  position: relative;
-  width: 100%;
-  display: block;
-  margin-bottom: 20px;
-}
-
-.input {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  font-size: 16px;
-  outline: none;
-  transition: border-color 0.3s;
-}
-
-.input:focus {
-  border-color: #3275F9;
-  box-shadow: 0 0 5px rgba(50, 117, 249, 0.5);
-}
-
-.placeholder {
-  position: absolute;
-  left: 15px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 14px;
-  color: #aaa;
-  pointer-events: none;
-  transition: 0.2s ease-out;
-}
-
-.input:focus + .placeholder,
-.input:not(:placeholder-shown) + .placeholder {
-  top: 5px;
-  font-size: 12px;
-  color: #3275F9;
-}
-
-.btn {
-  width: 48%;
-  margin: 5px;
-}
-
-/* Fade-in Animation */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: scale(0.8);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-  .card {
-    width: 95%;
-  }
-}
-
-@media (max-width: 576px) {
-  .input-group-text {
-    font-size: 0.9rem;
-  }
-  .btn {
+.container {
+    position: relative;
     width: 100%;
-  }
+    max-width: 400px;
+}
+
+.form-container {
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.form-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.form-box h3 {
+    margin-bottom: 20px;
+}
+
+.form-box input {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.form-box button {
+    background: #007BFF;
+    color: white;
+    border: none;
+    padding: 10px;
+    width: 100%;
+    margin-top: 10px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.form-box a {
+    color: #007BFF;
+    font-size: 14px;
+    text-decoration: none;
+    margin-top: 10px;
+}
+
+.hidden {
+    display: none;
+}
+
+/* Toggle Button */
+.toggle-container {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.toggle-btn {
+    background: #28A745;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.toggle-btn:hover {
+    background: #218838;
 }
