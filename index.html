@@ -11,30 +11,33 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.5.0/mdb.min.js"></script>
     <link href="./index.css" rel="stylesheet" />
   </head>
-  <body class="d-flex justify-content-center p-5">
-    <div class="card">
-      <div class="card-header">
-        <center><h3>Login Form</h3></center>
-      </div>
-      <form onsubmit="login()" id="loginForm" class="card-body px-5 py-4">
-        <center><small><span id="error" style="color: red"></span></small></center>
-        <center>
-          <label class="custom-field">
-            <input id="email" type="text" class="input" required />
-            <span class="placeholder">Email Id</span>
-          </label><br />
-          <label class="custom-field">
-            <input id="password" type="password" class="input" required />
-            <span class="placeholder">Password</span>
-          </label>
-        </center><br /><br />
-        <a href="#" onclick="forgotPass()">Forgot Password</a>
-        <center>
-          <button type="submit" class="btn btn-primary">Login</button>
-          <button onclick="signUp()" class="btn btn-secondary">Sign Up</button>
-        </center>
-      </form>
+  <body>
+
+<div class="container">
+    <div class="form-container">
+        <div class="toggle-container">
+            <button class="toggle-btn" onclick="toggleForms()">Sign Up</button>
+        </div>
+        <!-- Login Form -->
+        <div class="form-box" id="loginBox">
+            <h3>Login</h3>
+            <small><span id="error" style="color: red"></span></small>
+            <input id="email" type="text" placeholder="Email Id" required />
+            <input id="password" type="password" placeholder="Password" required />
+            <a href="#" onclick="forgotPass()">Forgot Password?</a>
+            <button onclick="login()">Login</button>
+        </div>
+
+        <!-- Signup Form -->
+        <div class="form-box hidden" id="signupBox">
+            <h3>Sign Up</h3>
+            <small><span id="signupError" style="color: red"></span></small>
+            <input id="signupEmail" type="text" placeholder="Email Id" required />
+            <input id="signupPassword" type="password" placeholder="Password" required />
+            <button onclick="signUp()">Sign Up</button>
+        </div>
     </div>
+</div>
 
     <!-- Spinner -->
     <div id="loadingSpinner" class="d-none spinner-border text-primary" role="status">
